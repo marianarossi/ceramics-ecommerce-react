@@ -1,16 +1,14 @@
-import React from 'react'
-import ReactDOM from 'react-dom/client'
-import { BrowserRouter } from  'react-router-dom';
-import { App } from './App.tsx'
-import { HomePage } from './pages/home/index.tsx';
-
+import { StrictMode } from "react";
+import { createRoot } from "react-dom/client";
+import "@/index.css";
+import { App } from "@/App.tsx";
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
-import 'bootstrap/dist/css/bootstrap.min.css'; // Optional, for Bootstrap's base stylesS
+import { BrowserRouter } from "react-router-dom";
 
-ReactDOM.createRoot(document.getElementById('root') as HTMLElement).render(
-  <React.StrictMode>
+createRoot(document.getElementById("root")!).render(
+  <StrictMode>
     <BrowserRouter>
-        <App />
+      <App />
     </BrowserRouter>
-  </React.StrictMode>,
-)
+  </StrictMode>
+);

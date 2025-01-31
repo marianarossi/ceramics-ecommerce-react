@@ -1,11 +1,6 @@
-import { IUserLogin, IUserSignUp } from "@/commons/interfaces";
+import { IUserLogin, IUserSignUp } from "@/commons/interfaces.ts";
 import { api } from "@/lib/axios";
 
-/**
- * Função para cadastrar um novo usuário
- * @param user - Dados do usuário que será cadastrado do tipo IUserSignUp
- * @returns - Retorna a resposta da API
- */
 const signup = async (user: IUserSignUp): Promise<any> => {
   let response;
   try {
@@ -16,8 +11,42 @@ const signup = async (user: IUserSignUp): Promise<any> => {
   return response;
 };
 
-const  AuthService  = {
-	signup,
+const login = async (user: IUserLogin): Promise<any> => {
+  let response;
+  try {
+    response = await api.post("/login", user);
+
+    localStorage.setItem("token", JSON.stringify(response.data.token));
+    localStorage.setItem("user", JSON.stringify(response.data.user));
+
+    api.defaults.headers.common["Authorization"] = `Bearer ${response.data.token}`;
+
+  } catch (err: any) {
+    response = err.response;
+  }
+  return response;
 };
 
-export  default  AuthService;
+const isAuthenticated = (): boolean => {
+  const token = localStorage.getItem("token");
+
+  if (token)
+    api.defaults.headers.common["Authorization"] = `Bearer ${JSON.parse(token)}`;
+
+  return token ? true : false;
+}
+
+const logout = (): void => {
+  localStorage.removeItem("token");
+  localStorage.removeItem("user");
+  api.defaults.headers.common["Authorization"] = '';
+}
+
+const AuthService = {
+  signup,
+  login,
+  isAuthenticated,
+  logout,
+};
+
+export default AuthService;

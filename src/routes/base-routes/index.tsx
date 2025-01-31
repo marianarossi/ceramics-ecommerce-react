@@ -1,17 +1,25 @@
 import { Route, Routes } from "react-router-dom";
+import { LoginPage } from "@/pages/login";
+import { UserSignupPage } from "@/pages/signup";
+import { AuthenticatedRoutes } from "../authenticated-routes";
 import { HomePage } from "@/pages/home";
-import { UserSignupPage } from "@/pages/user-signup";
 
+export function BaseRoutes() {
+  return (
+    <>
+    
+      <Routes>
+        
+        {/* Public Routes */}
+        <Route path="/login" element={<LoginPage />} />
+        <Route path="/signup" element={<UserSignupPage />} />
+        <Route path="/" element={<HomePage />} />
 
-export function BaseRoutes(){
-    return(
-        <>
-            <Routes>
-                <Route path="/signup" element={<UserSignupPage />} />
-
-                <Route path="/home" element={<HomePage></HomePage>}></Route>
-                <Route path="/" element={<HomePage></HomePage>}></Route>
-            </Routes>
-        </>
-    );
+        {/* Protected Routes */}
+        <Route element={<AuthenticatedRoutes />}>
+            <Route path="/home" element={<HomePage />} />
+        </Route>
+      </Routes>
+    </>
+  );
 }

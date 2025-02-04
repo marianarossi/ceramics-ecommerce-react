@@ -2,7 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import { LoginPage } from "@/pages/login";
 import { UserSignupPage } from "@/pages/signup";
 import { AuthenticatedRoutes } from "../authenticated-routes";
-import { HomePage } from "@/pages/home";
+import HomePage from "@/pages/home";
 
 export function BaseRoutes() {
   return (

@@ -1,6 +1,5 @@
 import { Link, useNavigate } from "react-router-dom";
 import AuthService from "@/service/auth-service";
-import logo from "@/assets/logo.png";
 import { useState } from "react";
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
 
@@ -25,17 +24,14 @@ export default function NavBar() {
           aria-expanded={isOpen}
           aria-label="Toggle navigation"
         >
-          <i className="fas fa-bars"></i>
+  <img src='/icon/menu.svg' alt="Menu Icon" className="menu-icon" />
         </button>
 
         <div className={`collapse navbar-collapse ${isOpen ? "show" : ""}`} id="navbarSupportedContent">
           {/* Logo */}
           <Link className="navbar-brand mt-2 mt-lg-0" to="/">
-  <img src={logo} alt="Logo" loading="lazy" className="img-fluid logo" />
-</Link>
-
-
-
+            <img src={'img/logo.png'} alt="Logo" loading="lazy" className="img-fluid logo" />
+          </Link>
           {/* Links de produtos */}
           <div id="product-links">
             <ul className="navbar-nav ms-lg-auto mb-2 mb-lg-0">
@@ -69,7 +65,7 @@ export default function NavBar() {
                 <Link className="nav-link" to="/cart">Cart</Link>
               </li>
               <li className="nav-item">
-                <button className="nav-link btn btn-link" onClick={onClickLogout}>Logout</button>
+                <button className="nav-link" onClick={onClickLogout}>Logout</button>
               </li>
             </ul>
           </div>

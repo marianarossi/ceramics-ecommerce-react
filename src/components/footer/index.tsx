@@ -97,7 +97,7 @@ const FooterComponent: React.FC = () => {
             <div className="col-md-4 col-lg-3 col-xl-3 mx-auto mb-md-0 mb-4">
               {/* Links */}
               <h6 className="text-uppercase fw-bold mb-4">Contact</h6>
-              <p><i className="fas fa-home me-3"></i> Pato Branco, PR 85501-560, BR</p>
+              <p><i className="fas fa-home me-3"></i> Pato Branco, PR 85501-560</p>
               <p>
                 <i className="fas fa-envelope me-3"></i>
                 email@example.com

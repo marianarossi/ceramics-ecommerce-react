@@ -12,7 +12,8 @@
 *
 {
     background-color: #F4F5EC;
-    color: #333;
+    color: #3a3a35;
+    
 }
 
 
@@ -96,7 +97,7 @@ select
     display: flex;
     flex-direction: column;
     justify-content:space-between;
-    background-color: #F4F5EC;
+    background-color: #f4f5ec;
     padding: 3rem;
 }
 

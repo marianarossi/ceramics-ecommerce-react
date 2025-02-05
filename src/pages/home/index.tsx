@@ -1,6 +1,7 @@
 import CarouselComponent from "@/components/carousel";
 import FooterComponent from "@/components/footer";
 import NavBar from "@/components/navbar";
+import ProductSlide from "@/components/product-slide";
 
 
 const HomePage = () => {
@@ -43,9 +44,8 @@ const HomePage = () => {
           </section>
   
           {/* Product Cards */}
-          <div className="mt-5 row row-cols-1 row-cols-md-3 g-4 mx-5" id="product-cards">
-            {/* <Products   />  Assuming Products component renders the product cards */}
-          </div>
+          <ProductSlide/>
+          
         </main>
   
         <FooterComponent />

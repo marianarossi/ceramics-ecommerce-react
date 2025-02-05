@@ -1,4 +1,3 @@
-import  NavBar from "@/components/navbar";
 import AuthService from "@/service/auth-service";
 import { Navigate, Outlet, useLocation } from "react-router-dom";
 import 'mdb-react-ui-kit/dist/css/mdb.min.css';
@@ -10,7 +9,6 @@ export function AuthenticatedRoutes() {
     return (
         isAuthenticated ? (
             <>
-
                 <Outlet />
             </>
         ) : (

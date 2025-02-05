@@ -1,5 +1,4 @@
 import {ChangeEvent, useState} from "react";
-import './style.css';
 import {IUserLogin} from "@/commons/interfaces.ts";
 import AuthService from "@/service/auth-service";
 import { ButtonWithProgress } from "@/components/button-with-progress";

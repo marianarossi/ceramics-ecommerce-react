@@ -1,12 +1,12 @@
 
 export interface IUserSignUp
 {
-    email: string;
     displayName: string;
-    username: string;
+    email: string;
     password: string;
     ssn: string;
     birthDate: Date;
+    gender: string; 
     phone: string;
 }
 

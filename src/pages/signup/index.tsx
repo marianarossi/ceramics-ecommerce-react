@@ -1,5 +1,4 @@
 import { ChangeEvent, useState } from "react";
-import './style.css';
 import { IUserSignUp } from "@/commons/interfaces.ts";
 import AuthService from "@/service/auth-service";
 import { ButtonWithProgress } from "@/components/button-with-progress";
@@ -9,16 +8,19 @@ export function UserSignupPage() {
     const [form, setForm] = useState<IUserSignUp>({
         email: '',
         displayName: '',
-        username: '',
         password: '',
         ssn: '',
         birthDate: new Date(),
+        gender: '',
         phone: '',
     });
     const [errors, setErrors] = useState({
+        email: '',
         displayName: '',
-        username: '',
         password: '',
+        ssn: '',
+        gender: '',
+        phone: '',
     });
     const [pendingApiCall, setPendingApiCall] = useState(false);
     const [apiError, setApiError] = useState(false);

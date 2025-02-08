@@ -61,7 +61,7 @@ export function LoginPage () {
                                 <form style={{ width: '23rem' }}>
                                     <h3 className="fw-normal mb-3 pb-3" style={{ letterSpacing: '1px' }}>Log in</h3>
 
-                                    <div className="form-outline mb-4">
+                                    <div className=" mb-4">
                                         <label className="form-label" htmlFor="form2Example18">Email address</label>
                                         <input
                                             type="email"
@@ -73,7 +73,7 @@ export function LoginPage () {
                                         />
                                     </div>
 
-                                    <div className="form-outline mb-4">
+                                    <div className=" mb-4">
                                         <label className="form-label" htmlFor="form2Example28">Password</label>
                                         <input
                                             type="password"
@@ -104,7 +104,6 @@ export function LoginPage () {
                                 </form>
                             </div>
                         </div>
-
                     </div>
                 </div>
             </section>

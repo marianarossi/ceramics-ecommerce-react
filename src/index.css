@@ -55,8 +55,8 @@ main
 }
 
 /* form css */
-input[type = "text"],
-input[type = "password"],
+/* input[type = "text"], */
+/* input[type = "password"],
 input[type = "email"],
 input[type = "date"],
 input[type = "tel"],
@@ -67,7 +67,13 @@ select
     border: 1px solid #ccc;
     border-radius: 5px;
     color: #333;
-}
+} */
+ 
+/* Override active tab color */
+.active-tab {
+    background-color: rgb(87, 154, 87) !important;
+    color: white !important;
+  }
 
 .w-50
 {

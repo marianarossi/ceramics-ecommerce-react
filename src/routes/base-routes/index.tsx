@@ -4,6 +4,7 @@ import { UserSignupPage } from "@/pages/signup";
 import { AuthenticatedRoutes } from "../authenticated-routes";
 import HomePage from "@/pages/home";
 import ProductPage from "@/pages/product";
+import { UserPage } from "@/pages/user";
 
 export function BaseRoutes() {
   return (
@@ -20,8 +21,9 @@ export function BaseRoutes() {
 
         {/* Protected Routes */}
         <Route element={<AuthenticatedRoutes />}>
-            <Route path="/home" element={<HomePage />} />
+            <Route path="/user" element={<UserPage/>} />
         </Route>
+
       </Routes>
     </>
   );

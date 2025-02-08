@@ -1,14 +1,9 @@
 import CarouselComponent from "@/components/carousel";
-import FooterComponent from "@/components/footer";
-import NavBar from "@/components/navbar";
 import ProductSlide from "@/components/product-slide";
 
 
 const HomePage = () => {
     return (
-      <div>
-        <NavBar />
-        
         <main>
           {/* Carousel */}
           <CarouselComponent />
@@ -47,9 +42,6 @@ const HomePage = () => {
           <ProductSlide/>
           
         </main>
-  
-        <FooterComponent />
-      </div>
     );
   };
   

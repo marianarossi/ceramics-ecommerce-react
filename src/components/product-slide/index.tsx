@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import { IProduct, ICategory } from '@/commons/interfaces';
+import { IProduct } from '@/commons/interfaces';
 import ProductService from '@/service/product-service';
 
 

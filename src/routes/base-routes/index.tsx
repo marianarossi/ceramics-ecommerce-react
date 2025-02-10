@@ -5,6 +5,7 @@ import { AuthenticatedRoutes } from "../authenticated-routes";
 import HomePage from "@/pages/home";
 import ProductPage from "@/pages/product";
 import { UserPage } from "@/pages/user";
+import CartPage from "@/pages/cart";
 
 export function BaseRoutes() {
   return (
@@ -17,6 +18,7 @@ export function BaseRoutes() {
         <Route path="/signup" element={<UserSignupPage />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/product/:id" element={<ProductPage />} />
+        <Route path="/cart" element={<CartPage />} />
 
 
         {/* Protected Routes */}

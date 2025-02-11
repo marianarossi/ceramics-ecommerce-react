@@ -14,7 +14,7 @@ export default function NavBar() {
   };
 
   return (
-    <nav className="navbar p-fixed navbar-expand-lg">
+    <nav className="navbar p-fixed navbar-expand-lg" style={{ backgroundColor: '#F4F5EC' }}>
       <div className="container-fluid">
         {/* Botão de colapso para mobile */}
         <button

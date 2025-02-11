@@ -1,4 +1,4 @@
-import { ChangeEvent, useState } from "react";
+import {  useState } from "react";
 import { IUserSignUp } from "@/commons/interfaces.ts";
 import AuthService from "@/service/auth-service";
 import { ButtonWithProgress } from "@/components/button-with-progress";
@@ -28,7 +28,7 @@ export function UserSignupPage() {
     const [apiSuccess, setApiSuccess] = useState(false);
     const navigate = useNavigate();
 
-    const onChange = (event: ChangeEvent<HTMLInputElement>) => {
+    const onChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = event.target;
         setForm((previousForm) => ({
             ...previousForm,
@@ -68,7 +68,7 @@ export function UserSignupPage() {
                         {/* Left image section */}
                         <div className="col-sm-6 px-0 d-none d-sm-block">
                             <img
-                                src="img/colorful-ceramic-2.jpg"
+                                src="public/img/crackedceramic.jpg"
                                 alt="Register image"
                                 className="w-100 vh-100"
                                 style={{ objectFit: 'cover', objectPosition: 'left' }}
@@ -106,22 +106,40 @@ export function UserSignupPage() {
                                         />
                                         {errors.email && (<div className="invalid-feedback">{errors.email}</div>)}
                                     </div>
+                                    <div className="row mb-4">
+                                        <div className="col-sm-6">
+                                            <label className="form-label" htmlFor="birthDate">Birth date</label>
+                                            <input
+                                                type="date"
+                                                name="birthDate"
+                                                id="birthDate"
+                                                className={errors.birthDate ? "form-control is-invalid" : "form-control"}
+                                                onChange={onChange}
+                                                value={form.birthDate.toString().substring(0, 10)}
+                                            />
+                                            {errors.birthDate && (<div className="invalid-feedback">{errors.birthDate}</div>)}
+                                        </div>
 
-                                    <div className=" mb-4">
-                                        <label className="form-label" htmlFor="birthDate">Birth date</label>
-                                        <input
-                                            type="date"
-                                            name="birthDate"
-                                            id="birthDate"
-                                            className={errors.birthDate ? "form-control is-invalid" : "form-control"}
-                                            onChange={onChange}
-                                            value={form.birthDate.toString().substring(0, 10)}
-                                        />
-                                        {errors.birthDate && (<div className="invalid-feedback">{errors.birthDate}</div>)}
+                                        <div className="col-sm-6">
+                                            <label className="form-label" htmlFor="gender">Gender</label>
+                                            <select
+                                                name="gender"
+                                                id="gender"
+                                                className={errors.gender ? "form-select is-invalid" : "form-select"}
+                                                onChange={onChange}
+                                                value={form.gender}
+                                            >
+                                                <option value="">Select Gender</option>
+                                                <option value="Male">Male</option>
+                                                <option value="Female">Female</option>
+                                                <option value="Other">Other</option>
+                                            </select>
+                                            {errors.gender && (<div className="invalid-feedback">{errors.gender}</div>)}
+                                        </div>
                                     </div>
 
                                     <div className="row">
-                                        <div className="col-sm-6 mb-4 ">
+                                        <div className="col-sm-6 mb-4">
                                             <label className="form-label" htmlFor="ssn">SSN</label>
                                             <input
                                                 type="text"
@@ -133,6 +151,7 @@ export function UserSignupPage() {
                                             />
                                             {errors.ssn && (<div className="invalid-feedback">{errors.ssn}</div>)}
                                         </div>
+
                                         <div className="col-sm-6 mb-4">
                                             <label className="form-label" htmlFor="phone">Cellphone</label>
                                             <input
@@ -147,7 +166,7 @@ export function UserSignupPage() {
                                         </div>
                                     </div>
 
-                                    <div className="form-outline mb-4">
+                                    <div className=" mb-4">
                                         <label className="form-label" htmlFor="password">Password</label>
                                         <input
                                             type="password"

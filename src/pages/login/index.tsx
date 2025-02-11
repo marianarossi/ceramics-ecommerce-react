@@ -51,7 +51,7 @@ export function LoginPage () {
 
                         {/* Left image section */}
                         <div className="col-sm-6 px-0 d-none d-sm-block">
-                            <img src="img/colorful-ceramic-2.jpg"
+                            <img src="public/img/colorful-ceramic-2.jpg"
                                  alt="Login image" className="w-100 vh-100" style={{ objectFit: 'cover', objectPosition: 'left' }} />
                         </div>
 

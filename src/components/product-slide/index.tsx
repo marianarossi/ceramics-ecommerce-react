@@ -2,11 +2,13 @@ import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IProduct } from '@/commons/interfaces';
 import ProductService from '@/service/product-service';
+import {useToast} from "@chakra-ui/react";
 
 
 const ProductSlide: React.FC = () => {
     const [products, setProducts] = useState<IProduct[]>([]);
     const navigate = useNavigate();
+    const toast = useToast(); // Initialize toast
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -24,11 +26,23 @@ const ProductSlide: React.FC = () => {
     const addItemCart = (product: IProduct) => {
         const cart = JSON.parse(localStorage.getItem('cart') || '[]');
         if (cart.find((item: IProduct) => item.id === product.id)) {
-            alert('Product already added to the cart');
+            toast({
+                title: 'Product already in the cart.',
+                description: 'This product is already added to your cart.',
+                duration: 3000,
+                status: 'warning',
+                isClosable: true,
+                position: 'top-right'});
         } else {
             cart.push(product);
             localStorage.setItem('cart', JSON.stringify(cart));
-            alert('Product added to the cart');
+            toast({
+                title: 'Product added.',
+                description: 'This product was added to your cart.',
+                status: 'success',
+                duration: 3000,
+                isClosable: true,
+                position: 'top-right'});
         }
     };
 
@@ -51,9 +65,9 @@ const ProductSlide: React.FC = () => {
                                 <s className="text-muted bg-transparent me-2">{product.price}</s>
                                 <strong className="bg-transparent">{product.installment}</strong>
                             </div>
-                            <button 
-                                type="button" 
-                                className="btn btn-sm btn-dark btn-outline-success" 
+                            <button
+                                type="button"
+                                className="btn btn-sm btn-dark btn-outline-success"
                                 onClick={() => addItemCart(product)}>
                                 Buy Now
                             </button>

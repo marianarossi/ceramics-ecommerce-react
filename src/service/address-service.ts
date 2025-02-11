@@ -33,6 +33,22 @@ const save = async (address: IAddress): Promise<any> => {
     return response;
 };
 
+const getAddressByCEP = async (cep: string): Promise<any> => {
+    try {
+        const response = await fetch(`https://viacep.com.br/ws/${cep}/json/`);
+        const data = await response.json();
+
+        if (data.erro) {
+            throw new Error("CEP não encontrado.");
+        }
+
+        return data;
+    } catch (error) {
+        console.error("Erro ao buscar o CEP:", error);
+        return null;
+    }
+};
+
 const findById = async (id: number): Promise<any> => {
     let response;
     try {
@@ -47,6 +63,7 @@ const AddressService = {
     findAll,
     remove,
     save,
+    getAddressByCEP,
     findById,
 };
 

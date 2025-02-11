@@ -48,7 +48,7 @@ export interface IAddress
 {
     id?: number;
     street: string,
-    number: 123,
+    number: number,
     complement: string,
     neighborhood: string,
     city: string,

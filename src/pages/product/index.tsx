@@ -3,10 +3,12 @@ import { useParams } from 'react-router-dom';
 import ProductService from '@/service/product-service';
 import { IProduct } from '@/commons/interfaces';
 import ProductSlide from '@/components/product-slide';
+import {useToast} from "@chakra-ui/react";
 
 const ProductPage: React.FC = () => {
     const { id } = useParams<{ id: string }>();
     const [product, setProduct] = useState<IProduct | null>(null);
+    const toast = useToast();
 
     useEffect(() => {
         const fetchProduct = async () => {
@@ -33,11 +35,25 @@ const addItemCart = (product: IProduct) => {
     if (!cart.find((p: IProduct) => p.id === product.id)) {
         cart.push(product);
         localStorage.setItem('cart', JSON.stringify(cart));
-        alert('Product added to the cart');
+        toast({
+            title: 'Product added.',
+            description: 'This product was added to your cart.',
+            status: 'success',
+            duration: 3000,
+            isClosable: true,
+            position: 'top-right'
+        });
     } else {
-        alert('Product already in the cart');
+        toast({
+            title: 'Product already in the cart.',
+            description: 'This product is already added to your cart.',
+            duration: 3000,
+            status: 'warning',
+            isClosable: true,
+            position: 'top-right'
+        });
     }
-};
+}
 
     if (!product) return <p>Loading...</p>;
 

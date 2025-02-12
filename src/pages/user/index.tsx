@@ -1,13 +1,7 @@
 import { useState, useEffect } from "react";
 import {
-  MDBTabs,
-  MDBTabsItem,
-  MDBTabsLink,
-  MDBTabsContent,
-  MDBTabsPane,
-  MDBBtn,
-  MDBListGroup,
-  MDBListGroupItem,
+  MDBBtn,MDBListGroup,MDBTabsPane,  MDBTabsContent,MDBTabsLink,MDBTabsItem,MDBTabs,
+  MDBListGroupItem,MDBCard, MDBCardBody, MDBCardTitle, MDBCardText, MDBRow, MDBCol,
   MDBModalContent, MDBModalHeader, MDBModalBody, MDBModal, MDBModalDialog, MDBModalTitle, MDBInput, MDBModalFooter
 } from "mdb-react-ui-kit";
 import {IAddress, IOrder, IUser} from "@/commons/interfaces.ts";
@@ -253,22 +247,37 @@ export function UserPage() {
             {/* Past Orders Tab */}
             <MDBTabsPane open={justifyActive === "tab3"}>
               <h5>Order History</h5>
-              <MDBListGroup>
+              <MDBRow>
                 {orders.length > 0 ? (
                     orders.map((order) => (
-                        <MDBListGroupItem key={order.id} className="d-flex justify-content-between align-items-center">
-                          <div>
-                            <strong>Order #{order.id}</strong> - {order.date} - {order.status}
-                          </div>
-                          <MDBBtn size="sm" color="info">View Details</MDBBtn>
-                        </MDBListGroupItem>
+                        <MDBCol md="6" lg="4" className="mb-4" key={order.id}>
+                          <MDBCard>
+                            <MDBCardBody>
+                              <MDBCardTitle>Order Date: {new Date(order.date).toLocaleDateString('en-GB')}</MDBCardTitle>
+                              <MDBCardText>
+                                <strong>Shipping:</strong> ${order.shipping.toFixed(2)}<br />
+                                <strong>Status:</strong> {order.status}<br />
+                                <strong>Payment:</strong> {order.payment}<br />
+                                <strong>Items:</strong>
+                                <ul>
+                                  {order.items.map((item) => (
+                                      <li key={item.productName}>
+                                        <strong>Product Name:</strong> {item.productName}<br />
+                                        <strong>Price:</strong> ${item.price.toFixed(2)}<br />
+                                        <strong>Quantity:</strong> {item.quantity}
+                                      </li>
+                                  ))}
+                                </ul>
+                              </MDBCardText>
+                            </MDBCardBody>
+                          </MDBCard>
+                        </MDBCol>
                     ))
                 ) : (
                     <p>No past orders found.</p>
                 )}
-              </MDBListGroup>
-            </MDBTabsPane>
-          </MDBTabsContent>
+              </MDBRow>
+            </MDBTabsPane>          </MDBTabsContent>
         </div>
 
         {/* Modal for adding new address */}

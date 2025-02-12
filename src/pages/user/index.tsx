@@ -14,7 +14,7 @@ import {IAddress, IOrder, IUser} from "@/commons/interfaces.ts";
 import userService from "@/service/user-service.ts";
 import addressService from "@/service/address-service.ts";
 import orderService from "@/service/order-service.ts";
-import {ButtonWithProgress} from "@/components/button-with-progress"; // Adjust this import based on your file structure
+import {ButtonWithProgress} from "@/components/button-with-progress";
 
 export function UserPage() {
   const [justifyActive, setJustifyActive] = useState('tab1');
@@ -35,15 +35,39 @@ export function UserPage() {
     country: '',
     zip: ''
   });
+  const [addressErrors, setAddressErrors] = useState({
+    street: '',
+    number: '',
+    complement: '',
+    neighborhood: '',
+    city: '',
+    state: '',
+    country: '',
+    zip: ''
+  });
 
   const handleJustifyClick = (value: string) => {
     if (value === justifyActive) {
       return;
     }
     setJustifyActive(value);
+    window.location.hash = value;
+  };
+
+  const handleOpenModal = () => {
+    setModalOpen(true);
+    setPendingApiCall(false);
+    setApiSuccess(false);
+    setApiError(false);
   };
 
   useEffect(() => {
+
+    const hash = window.location.hash.replace('#', '');
+    if (hash) {
+      setJustifyActive(hash);
+    }
+
     const fetchUser = async () => {
       try {
         const response = await userService.findAll();
@@ -82,36 +106,71 @@ export function UserPage() {
 
   }, []);
 
+  const handleAddressChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const { name, value } = event.target;
+    setNewAddress((previousAddress) => ({
+      ...previousAddress,
+      [name]: value,
+    }));
+
+    setAddressErrors((previousErrors) => ({
+      ...previousErrors,
+      [name]: '',
+    }));
+  };
+
+  const handleEditAddress = (address: IAddress) => {
+    setNewAddress(address);
+    setModalOpen(true);
+    setPendingApiCall(false);
+    setApiSuccess(false);
+    setApiError(false);
+  };
+
+  const handleDeleteAddress = async (iaddress: IAddress) => {
+    try {
+      await addressService.remove(iaddress);
+      setAddresses(addresses.filter(address => address.id !== iaddress.id));
+    } catch (error) {
+      console.error("An error occurred while deleting the address", error);
+    }
+  };
+
   const handleSaveAddress = async () => {
     setPendingApiCall(true);
     setApiError(false);
     setApiSuccess(false);
 
-      const addressToSave = {
-        ...newAddress,
-        number: parseInt(newAddress.number as unknown as string) || 0 // Convert to number, default to 0 if empty
-      };
-      const response = await addressService.save(addressToSave);
-      if (response.status === 200 || response.status === 201) {
-        setApiSuccess(true);
-        setTimeout(() => {
-          setModalOpen(false);
-          setNewAddress({
-            street: "",
-            number: "" as unknown as number,
-            complement: "",
-            neighborhood: "",
-            city: "",
-            state: "",
-            country: "",
-            zip: "",
-          });
-        }, 2000);
-      } else {
-        setApiError(true);
-        setPendingApiCall(false);
+    const addressToSave = {
+      ...newAddress,
+      number: parseInt(newAddress.number as unknown as string) || 0
+    };
+
+    let response;
+    if (newAddress.id) {
+      response = await addressService.update(addressToSave);
+    } else {
+      response = await addressService.save(addressToSave);
+    }
+
+    if (response.status === 200 || response.status === 201) {
+      setApiSuccess(true);
+      setTimeout(() => {
+        setModalOpen(false);
+        setNewAddress({
+          street: "", number: "" as unknown as number, complement: "", neighborhood: "", city: "", state: "", country: "", zip: "",
+        });
+        window.location.hash = 'tab2';
+        window.location.reload();
+      }, 2000);
+    } else {
+      if (response.data.validationErrors) {
+        setAddressErrors(response.data.validationErrors);
       }
-  }
+      setApiError(true);
+      setPendingApiCall(false);
+    }
+  };
 
   const handleZipBlur = async () => {
     if (newAddress.zip.length === 8) {
@@ -178,15 +237,17 @@ export function UserPage() {
                             <div>
                               {address.street}, {address.city}, {address.state} {address.zip}
                             </div>
-                            <MDBBtn size="sm" color="warning">Edit</MDBBtn>
+                            <div className="d-flex">
+                              <MDBBtn className="me-2" size="sm" color="warning" onClick={() => handleEditAddress(address)}>Edit</MDBBtn>
+                              <MDBBtn size="sm" color="danger" onClick={() => handleDeleteAddress(address)}>Delete</MDBBtn>
+                            </div>
                           </MDBListGroupItem>
                       ))
                   ) : (
                       <p>No addresses available.</p>
                   )}
                 </MDBListGroup>
-                <MDBBtn color="success" className="mt-3" onClick={() => setModalOpen(true)}>Add New Address</MDBBtn>
-              </MDBTabsPane>
+                <MDBBtn color="success" className="mt-3" onClick={handleOpenModal}>Add New Address</MDBBtn>              </MDBTabsPane>
             </MDBTabsContent>
 
             {/* Past Orders Tab */}
@@ -219,39 +280,71 @@ export function UserPage() {
                 <MDBBtn className='btn-close' color='none' onClick={() => setModalOpen(false)}></MDBBtn>
               </MDBModalHeader>
               <MDBModalBody>
-                <MDBInput className="mb-3" label="ZIP Code"
-                          value={newAddress.zip}
-                          onChange={(e) => setNewAddress({ ...newAddress, zip: e.target.value })}
-                          onBlur={handleZipBlur} // Fetches address on ZIP input blur
+                <MDBInput
+                    className={`mb-3 ${addressErrors.zip ? 'is-invalid' : ''}`}
+                    label="ZIP Code"
+                    value={newAddress.zip.replace(/\D/g, "")}
+                    onChange={handleAddressChange}
+                    onBlur={handleZipBlur}
+                    name="zip"
                 />
-                <MDBInput className="mb-3" label="Street"
-                          value={newAddress.street}
-                          onChange={(e) => setNewAddress({ ...newAddress, street: e.target.value })}
+                {addressErrors.zip && (<div className="invalid-feedback">{addressErrors.zip}</div>)}
+                <MDBInput
+                    className={`mb-3 ${addressErrors.street ? 'is-invalid' : ''}`}
+                    label="Street"
+                    value={newAddress.street}
+                    onChange={handleAddressChange}
+                    name="street"
                 />
-                <MDBInput className="mb-3" label="Number" type="number"
-                          value={newAddress.number}
-                          onChange={(e) => setNewAddress({ ...newAddress, number: parseInt(e.target.value) })}
+                {addressErrors.street && (<div className="invalid-feedback">{addressErrors.street}</div>)}
+                <MDBInput
+                    className={`mb-3 ${addressErrors.number ? 'is-invalid' : ''}`}
+                    label="Number" type="number"
+                    value={newAddress.number}
+                    onChange={handleAddressChange}
+                    name="number"
                 />
-                <MDBInput className="mb-3" label="Complement"
-                          value={newAddress.complement}
-                          onChange={(e) => setNewAddress({ ...newAddress, complement: e.target.value })}
+                {addressErrors.number && (<div className="invalid-feedback">{addressErrors.number}</div>)}
+                <MDBInput
+                    className={`mb-3 ${addressErrors.complement ? 'is-invalid' : ''}`}
+                    label="Complement"
+                    value={newAddress.complement}
+                    onChange={handleAddressChange}
+                    name="complement"
                 />
-                <MDBInput className="mb-3" label="Neighborhood"
-                          value={newAddress.neighborhood}
-                          onChange={(e) => setNewAddress({ ...newAddress, neighborhood: e.target.value })}
+                {addressErrors.complement && (<div className="invalid-feedback">{addressErrors.complement}</div>)}
+                <MDBInput
+                    className={`mb-3 ${addressErrors.neighborhood ? 'is-invalid' : ''}`}
+                    label="Neighborhood"
+                    value={newAddress.neighborhood}
+                    onChange={handleAddressChange}
+                    name="neighborhood"
                 />
-                <MDBInput className="mb-3" label="City"
-                          value={newAddress.city}
-                          onChange={(e) => setNewAddress({ ...newAddress, city: e.target.value })}
+                {addressErrors.neighborhood && (<div className="invalid-feedback">{addressErrors.neighborhood}</div>)}
+                <MDBInput
+                    className={`mb-3 ${addressErrors.city ? 'is-invalid' : ''}`}
+                    label="City"
+                    value={newAddress.city}
+                    onChange={handleAddressChange}
+                    name="city"
                 />
-                <MDBInput className="mb-3" label="State"
-                          value={newAddress.state}
-                          onChange={(e) => setNewAddress({ ...newAddress, state: e.target.value })}
+                {addressErrors.city && (<div className="invalid-feedback">{addressErrors.city}</div>)}
+                <MDBInput
+                    className={`mb-3 ${addressErrors.state ? 'is-invalid' : ''}`}
+                    label="State"
+                    value={newAddress.state}
+                    onChange={handleAddressChange}
+                    name="state"
                 />
-                <MDBInput className="mb-3" label="Country"
-                          value={newAddress.country}
-                          onChange={(e) => setNewAddress({ ...newAddress, country: e.target.value })}
+                {addressErrors.state && (<div className="invalid-feedback">{addressErrors.state}</div>)}
+                <MDBInput
+                    className={`mb-3 ${addressErrors.country ? 'is-invalid' : ''}`}
+                    label="Country"
+                    value={newAddress.country}
+                    onChange={handleAddressChange}
+                    name="country"
                 />
+                {addressErrors.country && (<div className="invalid-feedback">{addressErrors.country}</div>)}
               </MDBModalBody>
               <MDBModalFooter>
                 <MDBBtn color="secondary" onClick={() => setModalOpen(false)}>Close</MDBBtn>
@@ -263,6 +356,8 @@ export function UserPage() {
                     onClick={handleSaveAddress}
                 />
               </MDBModalFooter>
+              {apiError && <div className="alert alert-danger">Failed to save address!</div>}
+              {apiSuccess && <div className="alert alert-success">Address saved successfully!</div>}
             </MDBModalContent>
           </MDBModalDialog>
         </MDBModal>

@@ -57,7 +57,7 @@ const update = async (address: IAddress): Promise<any> => {
         response = error.response;
     }
     return response;
-}
+};
 
 const findById = async (id: number): Promise<any> => {
     let response;
@@ -69,6 +69,29 @@ const findById = async (id: number): Promise<any> => {
     return response;
 };
 
+const calculateShipment = async (data: any): Promise<any> => {
+    try {
+        const response = await fetch("/melhorenvio/me/shipment/calculate", {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+                "Authorization": "Bearer YOUR_ACCESS_TOKEN", // Replace with your token
+            },
+            body: JSON.stringify(data),
+        });
+
+        if (!response.ok) {
+            throw new Error(`Error ${response.status}: ${response.statusText}`);
+        }
+
+        return await response.json();
+    } catch (error) {
+        console.error("Error calculating shipment:", error);
+        return null;
+    }
+};
+
+
 const AddressService = {
     findAll,
     remove,
@@ -76,6 +99,7 @@ const AddressService = {
     update,
     getAddressByCEP,
     findById,
+    calculateShipment
 };
 
 export default AddressService;

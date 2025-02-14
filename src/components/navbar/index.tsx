@@ -38,19 +38,19 @@ export default function NavBar() {
           <div id="product-links">
             <ul className="navbar-nav ms-lg-auto mb-2 mb-lg-0">
               <li className="nav-item">
-                <Link className="nav-link" to="/user">Outdoor Vases</Link>
+                <Link className="nav-link" to="/products/category/1">Outdoor Vases</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/login">Indoor Decoration</Link>
+                <Link className="nav-link" to="/products/category/2">Indoor Decoration</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/signup">Clay</Link>
+                <Link className="nav-link" to="/products/category/3">Clay</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/cart">Art Material</Link>
+                <Link className="nav-link" to="/products/category/4">Art Material</Link>
               </li>
               <li className="nav-item">
-                <Link className="nav-link" to="/cart">Plant Hangers</Link>
+                <Link className="nav-link" to="/products/category/5">Plant Hangers</Link>
               </li>
             </ul>
           </div>

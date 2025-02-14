@@ -33,10 +33,21 @@ const findProductInfoById = async (id: number): Promise<any> => {
   return response;
 }
 
+const findProductsByCategory = async (categoryId: string): Promise<any> => {
+    let response;
+    try {
+        response = await api.get(`${PRODUCT_URL}/category/${categoryId}`);
+    } catch (error: any) {
+        response = error.response;
+    }
+    return response;
+}
+
 const ProductService = {
   findAll,
   findById,
   findProductInfoById,
+    findProductsByCategory,
 };
 
 export default ProductService;

@@ -46,7 +46,7 @@ const Checkout = () => {
     };
 
     return (
-        <div className="container py-5">
+        <main className="container">
             <h1 className="fw-bold mb-4">Checkout</h1>
 
             {/* Addresses List */}
@@ -98,7 +98,7 @@ const Checkout = () => {
             <button className="btn btn-info btn-lg" onClick={handleConfirmCheckout}>
                 Proceed to Payment
             </button>
-        </div>
+        </main>
     );
 };
 

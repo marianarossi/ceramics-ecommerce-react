@@ -7,6 +7,7 @@ import ProductPage from "@/pages/product";
 import { UserPage } from "@/pages/user";
 import CartPage from "@/pages/cart";
 import ProductCategoryPage from "@/pages/product-list";
+import Checkout from "@/pages/checkout";
 
 export function BaseRoutes() {
   return (
@@ -25,6 +26,7 @@ export function BaseRoutes() {
         {/* Protected Routes */}
         <Route element={<AuthenticatedRoutes />}>
           <Route path="/user" element={<UserPage/>} />
+          <Route path="/checkout" element={<Checkout />} />
         </Route>
 
       </Routes>

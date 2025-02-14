@@ -1,18 +1,14 @@
+// File: src/pages/ShoppingCart.tsx
 import { useState, useEffect } from "react";
 import { ICartItem } from "@/commons/interfaces.ts";
-import AddressService from "@/service/address-service.ts";
-
-const DEFAULT_FROM_ZIP = "96020360"; // Default warehouse ZIP
-const DEFAULT_SERVICE = "1,2,18"; // Example services
+import { useNavigate } from "react-router-dom";
+import AuthService from "@/service/auth-service"; // using your auth service
 
 const ShoppingCart = () => {
   const [cart, setCart] = useState<ICartItem[]>([]);
   const [subtotal, setSubtotal] = useState<number>(0);
-  const [total, setTotal] = useState<number>(0);
-  const [shipping, setShipping] = useState<number>(0);
   const [itemCount, setItemCount] = useState<number>(0);
-  const [zipCode, setZipCode] = useState<string>("");
-  const [estimatedShippingFee, setEstimatedShippingFee] = useState<string>("");
+  const navigate = useNavigate();
 
   useEffect(() => {
     const loadCart = () => {
@@ -33,10 +29,6 @@ const ShoppingCart = () => {
     loadCart();
   }, []);
 
-  useEffect(() => {
-    setTotal(subtotal + shipping);
-  }, [subtotal, shipping]);
-
   const updateCartSummary = (cart: ICartItem[]) => {
     let subtotalValue = 0;
     let itemCountValue = 0;
@@ -51,7 +43,7 @@ const ShoppingCart = () => {
 
   const updateQuantity = (id: number, newQuantity: number) => {
     const updatedCart = cart.map((item) =>
-        item.id === id ? { ...item, quantity: Math.max(1, newQuantity || 1) } : item
+        item.id === id ? { ...item, quantity: Math.max(1, newQuantity) } : item
     );
     setCart(updatedCart);
     localStorage.setItem("cart", JSON.stringify(updatedCart));
@@ -65,57 +57,17 @@ const ShoppingCart = () => {
     updateCartSummary(updatedCart);
   };
 
-  const handleShippingChange = (event: React.ChangeEvent<HTMLSelectElement>) => {
-    const shippingCost = parseFloat(event.target.value) || 0;
-    setShipping(shippingCost);
-    setTotal(subtotal + shippingCost);
-  };
-
-  const handleZipCodeChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setZipCode(event.target.value);
-    setEstimatedShippingFee("");
-    setShipping(0);
-    setTotal(subtotal);
-  };
-
-  const handleCalculateShipping = async () => {
-    if (!zipCode) {
-      alert("Please enter a ZIP code.");
-      return;
-    }
-
-    const shipmentData = {
-      from: DEFAULT_FROM_ZIP, // Sender ZIP Code
-      to: zipCode, // Destination ZIP Code
-      products: cart.map((item) => ({
-        id: item.id.toString(),
-        width: 10, // Default width if not set
-        height: 10, // Default height
-        length: 10, // Default length
-        weight: 0.5, // Default weight
-        insurance_value: item.price || 10, // Default insurance value
-        quantity: item.quantity || 1,
-      })),
-      service: DEFAULT_SERVICE, // Shipping service
-    };
-
-    try {
-      const response = await AddressService.calculateShipment(shipmentData); // Pass the object
-
-      if (response && response.length > 0) {
-        const shippingCost = response[0].price;
-        setEstimatedShippingFee(`Shipping fee: $${shippingCost.toFixed(2)}`);
-        setShipping(shippingCost);
-        setTotal(subtotal + shippingCost);
-      } else {
-        setEstimatedShippingFee("Shipping cost could not be calculated.");
-      }
-    } catch (error) {
-      console.error("Error calculating shipping:", error);
-      setEstimatedShippingFee("Shipping cost could not be retrieved.");
+  const handleCheckout = () => {
+    // Check if the user is authenticated using your auth service.
+    if (!AuthService.isAuthenticated()) {
+      // Store intended destination for redirection after login.
+      localStorage.setItem("lastPage", "/checkout");
+      navigate("/login");
+    } else {
+      // If authenticated, go directly to the checkout page.
+      navigate("/checkout");
     }
   };
-
 
   return (
       <main>
@@ -164,33 +116,13 @@ const ShoppingCart = () => {
               <p className="d-flex justify-content-between">
                 <span>Subtotal:</span> <strong>${subtotal.toFixed(2)}</strong>
               </p>
-
-              <label className="fw-bold mt-2 mb-1">ZIP Code</label>
-              <div className="input-group mb-2">
-                <input
-                    type="text"
-                    className="form-control border-0 border-bottom rounded-0"
-                    placeholder="Enter ZIP code"
-                    onChange={handleZipCodeChange}
-                />
-                <button className="btn btn-info" onClick={handleCalculateShipping}>
-                  Calculate
-                </button>
-              </div>
-              {estimatedShippingFee && <p>{estimatedShippingFee}</p>}
-
-              <label className="fw-bold mt-3 mb-1">Shipping</label>
-              <select className="form-select mb-3 btn-outline-white" onChange={handleShippingChange} value={shipping}>
-                <option value="0">Pick up in Store - $0.00</option>
-                {shipping > 0 && <option value={shipping}>{estimatedShippingFee}</option>}
-              </select>
-
-              <p className="d-flex justify-content-between mt-3">
-                <span className="fw-bold">Total:</span> <strong>${total.toFixed(2)}</strong>
+              {/* Note: Shipping and payment selections now occur in the checkout page */}
+              <p className="text-muted">
+                Shipping &amp; payment options will be selected on the checkout page.
               </p>
-
-              <button className="btn btn-info btn-lg btn-block">Checkout</button>
-
+              <button className="btn btn-info btn-lg btn-block" onClick={handleCheckout}>
+                Checkout
+              </button>
               <p className="text-center mt-4">
                 <a href="/" className="text-muted text-decoration-underline">
                   Continue Shopping

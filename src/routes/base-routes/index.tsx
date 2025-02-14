@@ -6,24 +6,26 @@ import HomePage from "@/pages/home";
 import ProductPage from "@/pages/product";
 import { UserPage } from "@/pages/user";
 import CartPage from "@/pages/cart";
+import ProductCategoryPage from "@/pages/product-list";
 
 export function BaseRoutes() {
   return (
     <>
-    
+
       <Routes>
-        
+
         {/* Public Routes */}
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<UserSignupPage />} />
         <Route path="/" element={<HomePage />} />
         <Route path="/product/:id" element={<ProductPage />} />
         <Route path="/cart" element={<CartPage />} />
+        <Route path="/products/category/:id" element={<ProductCategoryPage />} />
 
 
         {/* Protected Routes */}
         <Route element={<AuthenticatedRoutes />}>
-            <Route path="/user" element={<UserPage/>} />
+          <Route path="/user" element={<UserPage/>} />
         </Route>
 
       </Routes>

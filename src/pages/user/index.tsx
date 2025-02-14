@@ -8,7 +8,8 @@ import { IAddress, IOrder, IUser } from "@/commons/interfaces.ts";
 import userService from "@/service/user-service.ts";
 import addressService from "@/service/address-service.ts";
 import orderService from "@/service/order-service.ts";
-import { AddAddressModal } from "@/components/add-address-modal";
+import { AddAddressModal } from "@/components/address-modal";
+import {UserEditModal} from "@/components/user-modal";
 
 export function UserPage() {
   const [justifyActive, setJustifyActive] = useState("tab1");
@@ -17,6 +18,18 @@ export function UserPage() {
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [addressToEdit, setAddressToEdit] = useState<IAddress | undefined>(undefined);
+  const [selectedUser, setSelectedUser] = useState(null);
+  const [showModal, setShowModal] = useState(false);
+
+  const handleEditClick = (user) => {
+    setSelectedUser(user);
+    setShowModal(true);
+  };
+
+  const handleCloseModal = () => {
+    setShowModal(false);
+  };
+
 
   const handleJustifyClick = (value: string) => {
     if (value === justifyActive) return;
@@ -139,7 +152,9 @@ export function UserPage() {
               ) : (
                   <p>Loading...</p>
               )}
-              <MDBBtn color="primary">Edit Profile</MDBBtn>
+              {showModal && <UserEditModal user={selectedUser} onClose={handleCloseModal} />}
+
+              <button onClick={() => handleEditClick(user)} className="btn btn-warning">Edit</button>
             </MDBTabsPane>
 
             {/* Address Configuration Tab */}

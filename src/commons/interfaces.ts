@@ -15,6 +15,7 @@ export interface IUser
     id?: number;
     displayName: string;
     email: string;
+    password: string;
     ssn: string;
     birthDate: string;
     gender: string;

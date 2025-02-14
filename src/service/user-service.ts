@@ -1,5 +1,5 @@
 import { api } from "@/lib/axios";
-import { IUserSignUp} from "@/commons/interfaces.ts";
+import {IUser, IUserSignUp} from "@/commons/interfaces.ts";
 
 const USERS_URL = "/users";
 
@@ -23,10 +23,10 @@ const remove = async (id: number): Promise<any> => {
     return response;
 };
 
-const save = async (user: IUserSignUp): Promise<any> => {
+const update = async (user: IUser): Promise<any> => {
     let response;
     try {
-        response = await api.post(USERS_URL, user);
+        response = await api.put(`${USERS_URL}/${user.id}`, user);
     } catch (error: any) {
         response = error.response;
     }
@@ -48,7 +48,7 @@ const findById = async (id: number): Promise<any> => {
 const UserService = {
     findAll,
     remove,
-    save,
+    update,
     findById,
 };
 

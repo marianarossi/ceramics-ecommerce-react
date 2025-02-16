@@ -75,7 +75,8 @@ const calculateShipment = async (data: any): Promise<any> => {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": "Bearer YOUR_ACCESS_TOKEN", // Replace with your token
+                "Authorization": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJSUzI1NiJ9.eyJhdWQiOiIxIiwianRpIjoiMDQ2ZjI5MmM5MTBlMzBiNzRlNWYxZmRiMmZkODUxZjEyNjc5Mzk3MGIwZjQ1OGUxYzk0MTI1MGNmNmExYzMzNzE1MDJmYWQzYmFhYzhlYmYiLCJpYXQiOjE3Mzk2NzEyMTcuNjAxMTc5LCJuYmYiOjE3Mzk2NzEyMTcuNjAxMTgxLCJleHAiOjE3NzEyMDcyMTcuNTg4NzM5LCJzdWIiOiI5ZTMyNWVjZi0wM2U1LTRkZmItODkzNC1lMTFlN2ZjMDY1NTMiLCJzY29wZXMiOlsic2hpcHBpbmctY2FsY3VsYXRlIl19.xI_N2nG-9CGD9RaFAuZv2OCN51FAvHB8iv5Q7-NsdDm-te1pCXNnDfybM7IiLeQJ9To9d8QgW8iahcXnQ8ZFUjbtRstVcJm_p8R7lUhHtaDdEvR9yhSLmybCOaxWVb_4mrKwraGcQ8cceStdKVRtjSLXkd2m-4h4zYkXO4_Vxqu5Ajk1f3eYE4Muk85eRXbdpujzES8hsGD4NCW6R8Y52p4MV7nncwfj0CXPpurlYPdfb5qhASX7xhP9BKFmF8PyWMy3MvQOSrLQTf4ga6ELACERnNNqGFwa_zvbWrZDWeqVuCOiZRIcoilfvZALET1LzYeeGq5k3E4WKAv0c2tB7uLVgBZDepP7RNI3oF_2JRkuZ6YR9_ayPLdmp9_vtZeqQAGSVJ6JbpC2fgdeVUIq8cIHL4CBH9VtEoaBq0bN4g_vQ99DQnRv3kJ3zY51JfEP3rZ8ZNnQg3nmZXGOSlto3Wtai-Ze2omAUofvC0jIAwZ2iiYiB8zC5D6BHT1THX-t-Ra4XDLvLIluPl3HQ9LmJVo8wlwABhM_prCsuV_VaBaWrAJb6qpxl5V6mb0ppTvyX4abJrxzlE0wkB8ZXUH_P3YRZ7Ilv9SnehtjSRR2N0Xn_u5hL-nuD1ZgFyzQOuAj5e0Vf9nPlBr7_XyAHIRGPGEKckRFhB7dbd899muYfcE", // Replace with your token
+                "Accept": "application/json",
             },
             body: JSON.stringify(data),
         });

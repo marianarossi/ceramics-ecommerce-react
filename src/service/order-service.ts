@@ -1,4 +1,4 @@
-import { IOrder } from "@/commons/interfaces";
+import { IRequestOrder} from "@/commons/interfaces";
 import { api } from "@/lib/axios";
 
 const ORDER_URL = "/order";
@@ -23,7 +23,7 @@ const remove = async (id: number): Promise<any> => {
     return response;
 };
 
-const save = async (order: IOrder): Promise<any> => {
+const save = async (order: IRequestOrder): Promise<any> => {
     let response;
     try {
         response = await api.post(ORDER_URL, order);

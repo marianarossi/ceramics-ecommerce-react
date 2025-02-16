@@ -27,6 +27,12 @@ export interface IUserLogin
     email: string;
     password: string;
 }
+export interface IRequestOrder {
+    shipping: number;
+    payment: string;
+    address: { id: number };
+    items: { product: { id: number }, quantity: number }[];
+}
 
 export interface IOrderItem {
     id: number | null;

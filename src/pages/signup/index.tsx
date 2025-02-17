@@ -1,62 +1,162 @@
-import {  useState } from "react";
+import { useState } from "react";
 import { IUserSignUp } from "@/commons/interfaces.ts";
 import AuthService from "@/service/auth-service";
 import { ButtonWithProgress } from "@/components/button-with-progress";
 import { Link, useNavigate } from "react-router-dom";
 
 export function UserSignupPage() {
-    const [form, setForm] = useState<IUserSignUp>({
-        email: '',
-        displayName: '',
-        password: '',
-        ssn: '',
+    const [form, setForm] = useState<IUserSignUp & { confirmPassword?: string }>({
+        email: "",
+        displayName: "",
+        password: "",
+        confirmPassword: "",
+        ssn: "",
         birthDate: new Date(),
-        gender: '',
-        phone: '',
+        gender: "",
+        phone: "",
     });
+
+    // Extend errors state to include confirmPassword
     const [errors, setErrors] = useState({
-        email: '',
-        displayName: '',
-        password: '',
-        ssn: '',
-        birthDate: '',
-        gender: '',
-        phone: '',
+        email: "",
+        displayName: "",
+        password: "",
+        confirmPassword: "",
+        ssn: "",
+        birthDate: "",
+        gender: "",
+        phone: "",
     });
+
     const [pendingApiCall, setPendingApiCall] = useState(false);
     const [apiError, setApiError] = useState(false);
     const [apiSuccess, setApiSuccess] = useState(false);
+    const [showPassword, setShowPassword] = useState(false);
     const navigate = useNavigate();
 
-    const onChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const validateEmail = (email: string) => {
+        const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        return re.test(email);
+    };
+
+    const validateBirthDate = (birthDate: string) => {
+        const date = new Date(birthDate);
+        const now = new Date();
+        const minDate = new Date("1900-01-01");
+        return date <= now && date >= minDate;
+    };
+
+    const onChange = (
+        event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    ) => {
         const { name, value } = event.target;
         setForm((previousForm) => ({
             ...previousForm,
             [name]: value,
         }));
 
-        setErrors((previousForm) => ({
-            ...previousForm,
-            [name]: undefined,
+        setErrors((previousErrors) => ({
+            ...previousErrors,
+            [name]: "",
         }));
     };
 
     const onClickSignup = async () => {
+        let currentErrors: Record<string, string> = {};
+
+        if (!validateEmail(form.email)) {
+            currentErrors.email = "Please enter a valid email address.";
+        }
+        if (!form.displayName.trim()) {
+            currentErrors.displayName = "Full name is required.";
+        }
+        if (!form.password) {
+            currentErrors.password = "Password is required.";
+        }
+        if (form.password !== form.confirmPassword) {
+            currentErrors.confirmPassword = "Passwords do not match.";
+        }
+        // Format the birthDate (whether it's a Date or string)
+        const birthDateString =
+            form.birthDate instanceof Date
+                ? form.birthDate.toISOString().substring(0, 10)
+                : form.birthDate;
+        if (!validateBirthDate(birthDateString)) {
+            currentErrors.birthDate = "Please enter a valid birth date.";
+        }
+
+        // You can add further validations for ssn, gender, phone, etc.
+
+        // If there are any validation errors, update state and exit
+        if (Object.keys(currentErrors).length > 0) {
+            setErrors((prev) => ({ ...prev, ...currentErrors }));
+            return;
+        }
+
+        // If validation passes, prepare to call the API.
         setPendingApiCall(true);
         setApiError(false);
-        const response = await AuthService.signup(form);
 
-        if (response.status === 200 || response.status === 201) {
-            setApiSuccess(true);
-            setTimeout(() => {
-                navigate('/login');
-            }, 2000);
-        } else {
-            if (response.data.validationErrors) {
-                setErrors(response.data.validationErrors);
+        try {
+            // Remove confirmPassword from the payload before sending
+            const { confirmPassword, ...payload } = form;
+            const response = await AuthService.signup(payload);
+
+            if (response.status === 200 || response.status === 201) {
+                setApiSuccess(true);
+                setPendingApiCall(false);
+                setTimeout(() => {
+                    navigate("/login");
+                }, 2000);
+            } else {
+                // If API returns errors (e.g. email already exists)
+                if (response.data.validationErrors) {
+                    setErrors((prev) => ({
+                        ...prev,
+                        ...response.data.validationErrors,
+                    }));
+                } else if (
+                    response.data.message &&
+                    response.data.message.includes("Email already exists")
+                ) {
+                    setErrors((prev) => ({
+                        ...prev,
+                        email: "This email is already in use. Please choose another one.",
+                    }));
+                } else {
+                    setErrors((prev) => ({
+                        ...prev,
+                        email: "An unexpected error occurred.",
+                    }));
+                }
+                setApiError(true);
+                setPendingApiCall(false);
+            }
+        } catch (error: any) {
+            setPendingApiCall(false);
+            if (error.response) {
+                const { data } = error.response;
+                if (data.validationErrors) {
+                    setErrors((prev) => ({
+                        ...prev,
+                        ...data.validationErrors,
+                    }));
+                } else if (
+                    data.message &&
+                    data.message.includes("Email already exists")
+                ) {
+                    setErrors((prev) => ({
+                        ...prev,
+                        email: "This email is already in use. Please choose another one.",
+                    }));
+                } else {
+                    setErrors((prev) => ({
+                        ...prev,
+                        email: "An unexpected error occurred.",
+                    }));
+                }
             }
             setApiError(true);
-            setPendingApiCall(false);
         }
     };
 
@@ -71,61 +171,107 @@ export function UserSignupPage() {
                                 src="/img/crackedceramic.jpg"
                                 alt="Register image"
                                 className="w-100 vh-100"
-                                style={{ objectFit: 'cover', objectPosition: 'left' }}
+                                style={{ objectFit: "cover", objectPosition: "left" }}
                             />
                         </div>
 
                         {/* Right form section */}
                         <div className="col-sm-6 text-black">
                             <div className="d-flex align-items-center h-custom-2 px-5 ms-xl-4 mt-5 pt-5 pt-xl-0 mt-xl-5">
-                                <form style={{ width: '23rem' }}>
-                                    <h3 className="fw-normal mb-3 pb-3" style={{ letterSpacing: '1px' }}>Register for free</h3>
+                                <form
+                                    style={{ width: "23rem" }}
+                                    onSubmit={(e) => {
+                                        e.preventDefault();
+                                        onClickSignup();
+                                    }}
+                                >
+                                    <h3
+                                        className="fw-normal mb-3 pb-3"
+                                        style={{ letterSpacing: "1px" }}
+                                    >
+                                        Register for free
+                                    </h3>
 
-                                    <div className=" mb-4">
-                                        <label className="form-label" htmlFor="displayName">Full name</label>
+                                    <div className="mb-4">
+                                        <label className="form-label" htmlFor="displayName">
+                                            Full name
+                                        </label>
                                         <input
                                             type="text"
                                             name="displayName"
                                             id="displayName"
-                                            className={errors.displayName ? "form-control is-invalid" : "form-control"}
+                                            className={
+                                                errors.displayName
+                                                    ? "form-control is-invalid"
+                                                    : "form-control"
+                                            }
                                             onChange={onChange}
                                             value={form.displayName}
                                         />
-                                        {errors.displayName && (<div className="invalid-feedback">{errors.displayName}</div>)}
+                                        {errors.displayName && (
+                                            <div className="invalid-feedback">
+                                                {errors.displayName}
+                                            </div>
+                                        )}
                                     </div>
 
-                                    <div className=" mb-4">
-                                        <label className="form-label" htmlFor="email">E-Mail</label>
+                                    <div className="mb-4">
+                                        <label className="form-label" htmlFor="email">
+                                            E-Mail
+                                        </label>
                                         <input
                                             type="email"
                                             name="email"
                                             id="email"
-                                            className={errors.email ? "form-control is-invalid" : "form-control"}
+                                            className={
+                                                errors.email ? "form-control is-invalid" : "form-control"
+                                            }
                                             onChange={onChange}
                                             value={form.email}
                                         />
-                                        {errors.email && (<div className="invalid-feedback">{errors.email}</div>)}
+                                        {errors.email && (
+                                            <div className="invalid-feedback">{errors.email}</div>
+                                        )}
                                     </div>
+
                                     <div className="row mb-4">
                                         <div className="col-sm-6">
-                                            <label className="form-label" htmlFor="birthDate">Birth date</label>
+                                            <label className="form-label" htmlFor="birthDate">
+                                                Birth date
+                                            </label>
                                             <input
                                                 type="date"
                                                 name="birthDate"
                                                 id="birthDate"
-                                                className={errors.birthDate ? "form-control is-invalid" : "form-control"}
+                                                className={
+                                                    errors.birthDate
+                                                        ? "form-control is-invalid"
+                                                        : "form-control"
+                                                }
                                                 onChange={onChange}
-                                                value={form.birthDate.toString().substring(0, 10)}
+                                                value={
+                                                    form.birthDate instanceof Date
+                                                        ? form.birthDate.toISOString().substring(0, 10)
+                                                        : form.birthDate
+                                                }
                                             />
-                                            {errors.birthDate && (<div className="invalid-feedback">{errors.birthDate}</div>)}
+                                            {errors.birthDate && (
+                                                <div className="invalid-feedback">
+                                                    {errors.birthDate}
+                                                </div>
+                                            )}
                                         </div>
 
                                         <div className="col-sm-6">
-                                            <label className="form-label" htmlFor="gender">Gender</label>
+                                            <label className="form-label" htmlFor="gender">
+                                                Gender
+                                            </label>
                                             <select
                                                 name="gender"
                                                 id="gender"
-                                                className={errors.gender ? "form-select is-invalid" : "form-select"}
+                                                className={
+                                                    errors.gender ? "form-select is-invalid" : "form-select"
+                                                }
                                                 onChange={onChange}
                                                 value={form.gender}
                                             >
@@ -134,53 +280,121 @@ export function UserSignupPage() {
                                                 <option value="Female">Female</option>
                                                 <option value="Other">Other</option>
                                             </select>
-                                            {errors.gender && (<div className="invalid-feedback">{errors.gender}</div>)}
+                                            {errors.gender && (
+                                                <div className="invalid-feedback">{errors.gender}</div>
+                                            )}
                                         </div>
                                     </div>
 
                                     <div className="row">
                                         <div className="col-sm-6 mb-4">
-                                            <label className="form-label" htmlFor="ssn">SSN</label>
+                                            <label className="form-label" htmlFor="ssn">
+                                                SSN
+                                            </label>
                                             <input
                                                 type="text"
                                                 name="ssn"
                                                 id="ssn"
-                                                className={errors.ssn ? "form-control is-invalid" : "form-control"}
+                                                className={
+                                                    errors.ssn ? "form-control is-invalid" : "form-control"
+                                                }
                                                 onChange={onChange}
                                                 value={form.ssn}
                                             />
-                                            {errors.ssn && (<div className="invalid-feedback">{errors.ssn}</div>)}
+                                            {errors.ssn && (
+                                                <div className="invalid-feedback">{errors.ssn}</div>
+                                            )}
                                         </div>
 
                                         <div className="col-sm-6 mb-4">
-                                            <label className="form-label" htmlFor="phone">Cellphone</label>
+                                            <label className="form-label" htmlFor="phone">
+                                                Cellphone
+                                            </label>
                                             <input
                                                 type="tel"
                                                 name="phone"
                                                 id="phone"
-                                                className={errors.phone ? "form-control is-invalid" : "form-control"}
+                                                className={
+                                                    errors.phone ? "form-control is-invalid" : "form-control"
+                                                }
                                                 onChange={onChange}
                                                 value={form.phone}
                                             />
-                                            {errors.phone && (<div className="invalid-feedback">{errors.phone}</div>)}
+                                            {errors.phone && (
+                                                <div className="invalid-feedback">{errors.phone}</div>
+                                            )}
                                         </div>
                                     </div>
 
-                                    <div className=" mb-4">
-                                        <label className="form-label" htmlFor="password">Password</label>
+                                    <div className="mb-4 position-relative">
+                                        <label className="form-label" htmlFor="password">
+                                            Password
+                                        </label>
                                         <input
-                                            type="password"
+                                            type={showPassword ? "text" : "password"}
                                             name="password"
                                             id="password"
-                                            className={errors.password ? "form-control is-invalid" : "form-control"}
+                                            className={
+                                                errors.password
+                                                    ? "form-control is-invalid"
+                                                    : "form-control"
+                                            }
                                             onChange={onChange}
                                             value={form.password}
                                         />
-                                        {errors.password && (<div className="invalid-feedback">{errors.password}</div>)}
+                                        <span
+                                            onClick={() => setShowPassword((prev) => !prev)}
+                                            style={{
+                                                position: "absolute",
+                                                right: "10px",
+                                                top: "55%",
+                                                cursor: "pointer",
+                                            }}
+                                        >
+                                            <img
+                                                src={showPassword ? "/icon/eye-off.svg" : "/icon/eye.svg"}
+                                                alt={showPassword ? "Hide password" : "Show password"}
+                                                style={{ width: "20px", height: "20px" }}
+                                            />
+                                        </span>
+                                        {errors.password && (
+                                            <div className="invalid-feedback">{errors.password}</div>
+                                        )}
                                     </div>
 
-                                    {apiError && <div className="alert alert-danger">Falha ao autenticar-se!</div>}
-                                    {apiSuccess && <div className="alert alert-success">Cadastro realizado com sucesso!</div>}
+                                    <div className="mb-4 position-relative">
+                                        <label className="form-label" htmlFor="confirmPassword">
+                                            Confirm Password
+                                        </label>
+                                        <input
+                                            type={showPassword ? "text" : "password"}
+                                            name="confirmPassword"
+                                            id="confirmPassword"
+                                            className={
+                                                errors.confirmPassword
+                                                    ? "form-control is-invalid"
+                                                    : "form-control"
+                                            }
+                                            onChange={onChange}
+                                            value={form.confirmPassword}
+                                        />
+                                        {errors.confirmPassword && (
+                                            <div className="invalid-feedback">
+                                                {errors.confirmPassword}
+                                            </div>
+                                        )}
+                                    </div>
+
+                                    {apiError && (
+                                        <div className="alert alert-danger">
+                                            Falha ao autenticar-se!
+                                        </div>
+                                    )}
+                                    {apiSuccess && (
+                                        <div className="alert alert-success">
+                                            Cadastro realizado com sucesso!
+                                        </div>
+                                    )}
 
                                     <div className="pt-1 mb-4">
                                         <ButtonWithProgress
@@ -188,12 +402,14 @@ export function UserSignupPage() {
                                             pendingApiCall={pendingApiCall}
                                             className="btn btn-info btn-lg btn-block"
                                             text="Register"
-                                            onClick={onClickSignup}
                                         />
                                     </div>
 
                                     <div className="text-center">
-                                        Já possui cadastro? <Link className="link-primary" to="/login">Login</Link>
+                                        Já possui cadastro?{" "}
+                                        <Link className="link-primary" to="/login">
+                                            Login
+                                        </Link>
                                     </div>
                                 </form>
                             </div>

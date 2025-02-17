@@ -57,6 +57,13 @@ const ShoppingCart = () => {
     updateCartSummary(updatedCart);
   };
 
+  const clearCart = () => {
+    setCart([]);
+    localStorage.removeItem("cart");
+    setSubtotal(0);
+    setItemCount(0);
+  };
+
   const handleCheckout = () => {
     // Check if the user is authenticated using your auth service.
     if (!AuthService.isAuthenticated()) {
@@ -108,6 +115,13 @@ const ShoppingCart = () => {
                     </div>
                 ))}
               </div>
+                <div className="d-flex justify-content-start">
+                  <p className="text-center mt-3">
+                    <a href="#" className="text-muted text-decoration-underline" onClick={(e) => { e.preventDefault(); clearCart(); }}>
+                      Remove all items
+                    </a>
+                  </p>
+                </div>
             </div>
 
             <div className="col-md-4">

@@ -1,4 +1,3 @@
-
 export interface IUserSignUp
 {
     displayName: string;
@@ -22,11 +21,23 @@ export interface IUser
     phone: string;
 }
 
+export interface IUserUpdate
+{
+    id?: number;
+    displayName: string;
+    password?: string;
+    ssn: string;
+    birthDate: string;
+    gender: string;
+    phone: string;
+}
+
 export interface IUserLogin
 {
     email: string;
     password: string;
 }
+
 export interface IRequestOrder {
     shipping: number;
     payment: string;

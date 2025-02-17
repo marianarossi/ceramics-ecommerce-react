@@ -12,6 +12,17 @@ const findAll = async (): Promise<any> => {
   return response;
 };
 
+const findAllPageable = async (page: number): Promise<any> => {
+    let response;
+    try {
+        response = await api.get(`${PRODUCT_URL}/page?page=${page}&size=3`);
+    }catch(error: any)
+    {
+        response = error.response;
+    }
+    return response
+}
+
 const findById = async (id: number): Promise<any> => {
   let response;
   try {
@@ -45,6 +56,7 @@ const findProductsByCategory = async (categoryId: string): Promise<any> => {
 
 const ProductService = {
   findAll,
+  findAllPageable,
   findById,
   findProductInfoById,
     findProductsByCategory,

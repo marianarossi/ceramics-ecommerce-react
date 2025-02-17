@@ -137,7 +137,7 @@ const ProductCategoryPage: React.FC = () => {
                                             </Text>
                                             <Flex alignItems="center" mb={4}>
                                                 <Text textDecoration="line-through" color="gray.500" mr={2}>
-                                                    {product.price}
+                                                    ${product.price}
                                                 </Text>
                                                 <Text fontWeight="bold">{product.installment}</Text>
                                             </Flex>

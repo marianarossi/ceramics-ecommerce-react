@@ -156,7 +156,6 @@ export function AddAddressModal({
     };
 
     const handleSaveAddress = async () => {
-        // Run client-side validation first.
         if (!validate()) {
             return;
         }
@@ -167,7 +166,6 @@ export function AddAddressModal({
 
         const addressToSave = {
             ...newAddress,
-            // Convert the number field from string to number.
             number: parseInt(newAddress.number as unknown as string) || 0,
         };
 
@@ -180,6 +178,7 @@ export function AddAddressModal({
 
         if (response.status === 200 || response.status === 201) {
             setApiSuccess(true);
+            setPendingApiCall(false);
             setTimeout(() => {
                 setModalOpen(false);
                 onAddressSaved();
@@ -192,7 +191,6 @@ export function AddAddressModal({
             setPendingApiCall(false);
         }
     };
-
     return (
         <MDBModal open={modalOpen} setOpen={setModalOpen} tabIndex="-1">
             <MDBModalDialog>

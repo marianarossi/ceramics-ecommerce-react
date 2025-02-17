@@ -19,6 +19,7 @@ export function BaseRoutes() {
         <Route path="/login" element={<LoginPage />} />
         <Route path="/signup" element={<UserSignupPage />} />
         <Route path="/" element={<HomePage />} />
+        <Route path="/home" element={<HomePage />} />
         <Route path="/product/:id" element={<ProductPage />} />
         <Route path="/cart" element={<CartPage />} />
         <Route path="/products/category/:id" element={<ProductCategoryPage />} />

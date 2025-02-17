@@ -1,46 +1,55 @@
 import { useState, useEffect } from "react";
-import { IUser } from "@/commons/interfaces.ts";
+import { IUser, IUserUpdate } from "@/commons/interfaces.ts";
 import UserService from "@/service/user-service.ts";
 import { ButtonWithProgress } from "@/components/button-with-progress";
 
-export function UserEditModal({ user, onClose, onUpdate }) {
-    const [form, setForm] = useState<IUser>({
-        id: user?.id || undefined,
-        displayName: user?.displayName || "",
-        email: user?.email || "",
-        password: "", // Leave empty for security reasons
-        ssn: user?.ssn || "",
-        birthDate: user?.birthDate ? user.birthDate.substring(0, 10) : "",
-        gender: user?.gender || "",
-        phone: user?.phone || "",
+interface UserEditModalProps {
+    modalOpen: boolean;
+    setModalOpen: (open: boolean) => void;
+    onUserSaved: (updatedUser: IUser) => void;
+    userToEdit: IUser | null;
+}
+
+export function UserEditModal({ modalOpen, setModalOpen, onUserSaved, userToEdit }: UserEditModalProps) {
+    if (!modalOpen) {
+        return null;
+    }
+
+    const [form, setForm] = useState<IUserUpdate>({
+        id: userToEdit?.id,
+        displayName: userToEdit?.displayName || "",
+        password: "", // leave blank to keep the current password
+        ssn: userToEdit?.ssn || "",
+        birthDate: userToEdit?.birthDate ? userToEdit.birthDate.substring(0, 10) : "",
+        gender: userToEdit?.gender || "",
+        phone: userToEdit?.phone || "",
     });
 
-    const [errors, setErrors] = useState({});
+    const [errors, setErrors] = useState<any>({});
     const [pendingApiCall, setPendingApiCall] = useState(false);
     const [apiError, setApiError] = useState(false);
 
     useEffect(() => {
-        if (user) {
+        if (userToEdit) {
             setForm({
-                id: user.id || undefined,
-                displayName: user.displayName || "",
-                email: user.email || "",
-                password: "", // Prevent exposing the stored password
-                ssn: user.ssn || "",
-                birthDate: user.birthDate ? user.birthDate.substring(0, 10) : "",
-                gender: user.gender || "",
-                phone: user.phone || "",
+                id: userToEdit.id,
+                displayName: userToEdit.displayName || "",
+                password: "", // do not prefill password
+                ssn: userToEdit.ssn || "",
+                birthDate: userToEdit.birthDate ? userToEdit.birthDate.substring(0, 10) : "",
+                gender: userToEdit.gender || "",
+                phone: userToEdit.phone || "",
             });
         }
-    }, [user]);
+    }, [userToEdit]);
 
-    const onChange = (event) => {
+    const onChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = event.target;
         setForm((prevForm) => ({
             ...prevForm,
             [name]: value,
         }));
-        setErrors((prevErrors) => ({
+        setErrors((prevErrors: any) => ({
             ...prevErrors,
             [name]: "",
         }));
@@ -53,8 +62,9 @@ export function UserEditModal({ user, onClose, onUpdate }) {
         const response = await UserService.update(form);
 
         if (response.status === 200) {
-            onUpdate(form);
-            onClose();
+            // Use the updated user returned from the API
+            onUserSaved(response.data);
+            setModalOpen(false);
         } else {
             if (response.data.validationErrors) {
                 setErrors(response.data.validationErrors);
@@ -65,14 +75,26 @@ export function UserEditModal({ user, onClose, onUpdate }) {
     };
 
     return (
-        <div className="modal show d-block" tabIndex="-1">
+        <div className="modal show d-block" tabIndex={-1}>
             <div className="modal-dialog">
                 <div className="modal-content">
                     <div className="modal-header">
                         <h5 className="modal-title">Edit User</h5>
-                        <button type="button" className="btn-close" onClick={onClose}></button>
+                        <button type="button" className="btn-close" onClick={() => setModalOpen(false)}></button>
                     </div>
                     <div className="modal-body">
+                        {/* Display email as read-only */}
+                        <div className="mb-3">
+                            <label className="form-label">E-Mail</label>
+                            <input
+                                type="email"
+                                name="email"
+                                value={userToEdit?.email || ""}
+                                className="form-control"
+                                disabled
+                            />
+                        </div>
+
                         <div className="mb-3">
                             <label className="form-label">Full Name</label>
                             <input
@@ -83,18 +105,6 @@ export function UserEditModal({ user, onClose, onUpdate }) {
                                 className={errors.displayName ? "form-control is-invalid" : "form-control"}
                             />
                             {errors.displayName && <div className="invalid-feedback">{errors.displayName}</div>}
-                        </div>
-
-                        <div className="mb-3">
-                            <label className="form-label">E-Mail</label>
-                            <input
-                                type="email"
-                                name="email"
-                                value={form.email}
-                                onChange={onChange}
-                                className={errors.email ? "form-control is-invalid" : "form-control"}
-                            />
-                            {errors.email && <div className="invalid-feedback">{errors.email}</div>}
                         </div>
 
                         <div className="mb-3">
@@ -173,7 +183,9 @@ export function UserEditModal({ user, onClose, onUpdate }) {
                             text="Save"
                             onClick={onSave}
                         />
-                        <button className="btn btn-secondary" onClick={onClose}>Cancel</button>
+                        <button className="btn btn-secondary" onClick={() => setModalOpen(false)}>
+                            Cancel
+                        </button>
                     </div>
                 </div>
             </div>

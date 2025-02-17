@@ -209,10 +209,11 @@ export function AddAddressModal({
                         <MDBInput
                             className={`mb-3 ${addressErrors.zip ? "is-invalid" : ""}`}
                             label="ZIP Code"
-                            value={newAddress.zip.replace(/\D/g, "")}
+                            value={newAddress.zip.replace(/\D/g, "").slice(0, 8)}
                             onChange={handleAddressChange}
                             onBlur={handleZipBlur}
                             name="zip"
+                            maxLength={8}
                         />
                         {addressErrors.zip && (
                             <div className="invalid-feedback">{addressErrors.zip}</div>

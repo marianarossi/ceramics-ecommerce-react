@@ -14,7 +14,7 @@ const HomePage = () => {
               <div className="col-md-6 gx-5 mb-4">
                 <div className="bg-image hover-overlay shadow-2-strong" data-mdb-ripple-init data-mdb-ripple-color="light">
                   <img src="/img/ceramictools.jpg" className="img-fluid" alt="Ceramic Tools" />
-                  <a href="#!">
+                  <a>
                     <div className="mask" style={{ backgroundColor: 'rgba(251, 251, 251, 0.15)' }}></div>
                   </a>
                 </div>

@@ -57,15 +57,11 @@ export default function NavBar() {
 
           {/* Elementos da direita */}
           <div className="ms-auto d-flex flex-column flex-lg-row">
-            {/* Barra de pesquisa */}
-            <form className="d-flex input-group w-auto">
-              <input type="search" className="form-control rounded" placeholder="Search" aria-label="Search" />
-            </form>
 
             {/* Links adicionais */}
             <ul className="navbar-nav ms-lg-auto mb-2 mb-lg-0">
               <li className="nav-item">
-                <Link className="nav-link" to="/#aboutus">About us</Link>
+                <Link className="nav-link" to="/home">About us</Link>
               </li>
               <li className="nav-item">
                 <Link className="nav-link" to="/cart">Cart</Link>

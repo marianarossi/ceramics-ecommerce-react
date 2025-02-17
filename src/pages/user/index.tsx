@@ -1,4 +1,3 @@
-// File: src/pages/UserPage.tsx
 import { useState, useEffect } from "react";
 import {
   MDBBtn,MDBListGroup,MDBTabsPane,  MDBTabsContent,MDBTabsLink,MDBTabsItem,MDBTabs,
@@ -9,7 +8,7 @@ import userService from "@/service/user-service.ts";
 import addressService from "@/service/address-service.ts";
 import orderService from "@/service/order-service.ts";
 import { AddAddressModal } from "@/components/address-modal";
-import {UserEditModal} from "@/components/user-modal";
+import { UserEditModal } from "@/components/user-modal";
 
 export function UserPage() {
   const [justifyActive, setJustifyActive] = useState("tab1");
@@ -25,11 +24,6 @@ export function UserPage() {
     setUserToEdit(user);
     setUserModalOpen(true);
   };
-  //
-  // // Callback when the user modal is closed (if needed)
-  // const handleUserModalClose = () => {
-  //   setUserModalOpen(false);
-  // };
 
   const handleUserSaved = (updatedUser: IUser) => {
     setUser(updatedUser);
@@ -139,6 +133,9 @@ export function UserPage() {
                       <strong>Phone:</strong> {user.phone}
                     </p>
                     <p>
+                      <strong>SSN:</strong> {user.ssn}
+                    </p>
+                    <p>
                       <strong>Birth Date:</strong> {user.birthDate}
                     </p>
                     <p>
@@ -230,7 +227,7 @@ export function UserPage() {
           </MDBTabsContent>
         </div>
 
-        {/* Address Modal (already following the pattern) */}
+        {/* Address Modal */}
         <AddAddressModal
             modalOpen={modalOpen}
             setModalOpen={setModalOpen}

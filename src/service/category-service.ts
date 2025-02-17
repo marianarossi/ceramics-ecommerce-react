@@ -12,19 +12,9 @@ const findAll = async (): Promise<any> => {
   return response;
 };
 
-const findById = async (id: number): Promise<any> => {
-  let response;
-  try {
-    response = await api.get(`${CATEGORY_URL}/${id}`);
-  } catch (error: any) {
-    response = error.response;
-  }
-  return response;
-}
 
 const CategoryService = {
   findAll,
-  findById,
 };
 
 export default CategoryService;

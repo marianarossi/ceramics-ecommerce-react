@@ -38,7 +38,6 @@ const Checkout = () => {
         loadCartItems();
     }, []);
 
-    // Recalculate shipping options when addresses or selectedAddress changes
     useEffect(() => {
         const calcShipping = async () => {
             if (selectedAddress !== null && addresses.length > 0) {
@@ -123,7 +122,7 @@ const Checkout = () => {
 
     const handleAddressSaved = () => {
         setModalOpen(false);
-        loadAddresses(); // Reload addresses after adding a new one
+        loadAddresses();
     };
 
     const handleFinishOrder = async () => {
@@ -151,7 +150,6 @@ const Checkout = () => {
             return;
         }
 
-        // Map cart items to order items structure
         const orderItems = cartItems.map((item) => ({
             product: { id: item.id },
             quantity: item.quantity,
@@ -243,9 +241,9 @@ const Checkout = () => {
                                 onChange={(e) => setPaymentMethod(e.target.value)}
                             >
                                 <option value="">Select...</option>
-                                <option value="credit card">Credit Card</option>
-                                <option value="paypal">PayPal</option>
-                                <option value="bank transfer">Bank Transfer</option>
+                                <option value="Credit Card">Credit Card</option>
+                                <option value="Paypal">PayPal</option>
+                                <option value="Bank Transfer">Bank Transfer</option>
                             </select>
                         </div>
                     </div>

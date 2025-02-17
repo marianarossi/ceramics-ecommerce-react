@@ -1,5 +1,5 @@
 import { api } from "@/lib/axios";
-import {IUser, IUserSignUp} from "@/commons/interfaces.ts";
+import {IUser} from "@/commons/interfaces.ts";
 
 const USERS_URL = "/users";
 
@@ -24,9 +24,13 @@ const remove = async (id: number): Promise<any> => {
 };
 
 const update = async (user: IUser): Promise<any> => {
+    const updatedUser: Partial<IUser> = { ...user };
+    if (!updatedUser.password || updatedUser.password.trim() === "") {
+        delete updatedUser.password;
+    }
     let response;
     try {
-        response = await api.put(`${USERS_URL}/${user.id}`, user);
+        response = await api.put(`${USERS_URL}/${user.id}`, updatedUser);
     } catch (error: any) {
         response = error.response;
     }

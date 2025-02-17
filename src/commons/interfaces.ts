@@ -32,6 +32,7 @@ export interface IRequestOrder {
     payment: string;
     address: { id: number };
     items: { product: { id: number }, quantity: number }[];
+    total: number;
 }
 
 export interface IOrderItem {
@@ -48,12 +49,26 @@ export interface IOrder {
     status: string;
     payment: string;
     items: IOrderItem[];
+    total: number;
+    address: IAddress;
 }
 
 
 export interface IAddress
 {
     id?: number;
+    street: string,
+    number: number,
+    complement: string,
+    neighborhood: string,
+    city: string,
+    state: string,
+    country: string,
+    zip: string
+}
+
+export interface IResponseAddress {
+    id: number;
     street: string,
     number: number,
     complement: string,

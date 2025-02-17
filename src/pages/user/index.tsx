@@ -18,18 +18,23 @@ export function UserPage() {
   const [orders, setOrders] = useState<IOrder[]>([]);
   const [modalOpen, setModalOpen] = useState(false);
   const [addressToEdit, setAddressToEdit] = useState<IAddress | undefined>(undefined);
-  const [selectedUser, setSelectedUser] = useState(null);
-  const [showModal, setShowModal] = useState(false);
+  const [userModalOpen, setUserModalOpen] = useState(false);
+  const [userToEdit, setUserToEdit] = useState<IUser | null>(null);
 
-  const handleEditClick = (user) => {
-    setSelectedUser(user);
-    setShowModal(true);
+  const handleUserEditClick = (user: IUser | null) => {
+    setUserToEdit(user);
+    setUserModalOpen(true);
   };
+  //
+  // // Callback when the user modal is closed (if needed)
+  // const handleUserModalClose = () => {
+  //   setUserModalOpen(false);
+  // };
 
-  const handleCloseModal = () => {
-    setShowModal(false);
+  const handleUserSaved = (updatedUser: IUser) => {
+    setUser(updatedUser);
+    setUserModalOpen(false);
   };
-
 
   const handleJustifyClick = (value: string) => {
     if (value === justifyActive) return;
@@ -102,26 +107,17 @@ export function UserPage() {
         <div className="m-5">
           <MDBTabs pills justify className="mb-3">
             <MDBTabsItem>
-              <MDBTabsLink
-                  onClick={() => handleJustifyClick("tab1")}
-                  active={justifyActive === "tab1"}
-              >
+              <MDBTabsLink onClick={() => handleJustifyClick("tab1")} active={justifyActive === "tab1"}>
                 User Info
               </MDBTabsLink>
             </MDBTabsItem>
             <MDBTabsItem>
-              <MDBTabsLink
-                  onClick={() => handleJustifyClick("tab2")}
-                  active={justifyActive === "tab2"}
-              >
+              <MDBTabsLink onClick={() => handleJustifyClick("tab2")} active={justifyActive === "tab2"}>
                 Address Configuration
               </MDBTabsLink>
             </MDBTabsItem>
             <MDBTabsItem>
-              <MDBTabsLink
-                  onClick={() => handleJustifyClick("tab3")}
-                  active={justifyActive === "tab3"}
-              >
+              <MDBTabsLink onClick={() => handleJustifyClick("tab3")} active={justifyActive === "tab3"}>
                 Past Orders
               </MDBTabsLink>
             </MDBTabsItem>
@@ -152,9 +148,9 @@ export function UserPage() {
               ) : (
                   <p>Loading...</p>
               )}
-              {showModal && <UserEditModal user={selectedUser} onClose={handleCloseModal} />}
-
-              <button onClick={() => handleEditClick(user)} className="btn btn-warning">Edit</button>
+              <button onClick={() => handleUserEditClick(user)} className="btn btn-warning">
+                Edit
+              </button>
             </MDBTabsPane>
 
             {/* Address Configuration Tab */}
@@ -163,27 +159,15 @@ export function UserPage() {
               <MDBListGroup>
                 {addresses.length > 0 ? (
                     addresses.map((address) => (
-                        <MDBListGroupItem
-                            key={address.id}
-                            className="d-flex justify-content-between align-items-center"
-                        >
+                        <MDBListGroupItem key={address.id} className="d-flex justify-content-between align-items-center">
                           <div>
                             {address.street}, {address.city}, {address.state} {address.zip}
                           </div>
                           <div className="d-flex">
-                            <MDBBtn
-                                className="me-2"
-                                size="sm"
-                                color="warning"
-                                onClick={() => handleEditAddress(address)}
-                            >
+                            <MDBBtn className="me-2" size="sm" color="warning" onClick={() => handleEditAddress(address)}>
                               Edit
                             </MDBBtn>
-                            <MDBBtn
-                                size="sm"
-                                color="danger"
-                                onClick={() => handleDeleteAddress(address)}
-                            >
+                            <MDBBtn size="sm" color="danger" onClick={() => handleDeleteAddress(address)}>
                               Delete
                             </MDBBtn>
                           </div>
@@ -208,15 +192,18 @@ export function UserPage() {
                           <MDBCard>
                             <MDBCardBody>
                               <MDBCardTitle>
-                                Order Date:{" "}
-                                {new Date(order.date).toLocaleDateString("en-GB")}
+                                Order Date: {new Date(order.date).toLocaleDateString("en-GB")}
                               </MDBCardTitle>
                               <MDBCardText>
+                                <strong>Total:</strong> ${order.total.toFixed(2)}
+                                <br />
                                 <strong>Shipping:</strong> ${order.shipping.toFixed(2)}
                                 <br />
                                 <strong>Status:</strong> {order.status}
                                 <br />
                                 <strong>Payment:</strong> {order.payment}
+                                <br />
+                                <strong>Address:</strong> {order.address.street}, {order.address.city}, {order.address.state} {order.address.zip}
                                 <br />
                                 <strong>Items:</strong>
                                 <ul>
@@ -243,12 +230,20 @@ export function UserPage() {
           </MDBTabsContent>
         </div>
 
-        {/* Reusable modal component */}
+        {/* Address Modal (already following the pattern) */}
         <AddAddressModal
             modalOpen={modalOpen}
             setModalOpen={setModalOpen}
             onAddressSaved={handleAddressSaved}
             addressToEdit={addressToEdit}
+        />
+
+        {/* User Modal */}
+        <UserEditModal
+            modalOpen={userModalOpen}
+            setModalOpen={setUserModalOpen}
+            onUserSaved={handleUserSaved}
+            userToEdit={userToEdit}
         />
       </main>
   );

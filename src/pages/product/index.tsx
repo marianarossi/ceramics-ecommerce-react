@@ -134,7 +134,7 @@ const ProductPage: React.FC = () => {
                     <p>{product.text}</p>
                     <p><strong>Support Local Art</strong></p>
                     <p>
-                        <s>{product.price}</s> <strong>{product.installment}</strong>
+                        <s>${product.price}</s> <strong>{product.installment}</strong>
                     </p>
 
                     {/* Shipping Calculation */}

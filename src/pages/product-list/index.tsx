@@ -3,11 +3,11 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Container, SimpleGrid, Box, Image, Heading, Text, Button, Flex, Fade, useToast,} from '@chakra-ui/react';
 import { IProduct } from '@/commons/interfaces';
 import ProductService from '@/service/product-service';
-import CategoryService from '@/service/category-service'; // Ensure this service exists
+import CategoryService from '@/service/category-service';
 
 const ProductCategoryPage: React.FC = () => {
     const [products, setProducts] = useState<IProduct[]>([]);
-    const [categories, setCategories] = useState<any[]>([]); // Adjust type as needed
+    const [categories, setCategories] = useState<any[]>([]);
     const { id } = useParams<{ id?: string }>();
     const navigate = useNavigate();
     const toast = useToast();

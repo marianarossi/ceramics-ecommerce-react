@@ -16,7 +16,6 @@ export function UserSignupPage() {
         phone: "",
     });
 
-    // Extend errors state to include confirmPassword
     const [errors, setErrors] = useState({
         email: "",
         displayName: "",
@@ -62,7 +61,7 @@ export function UserSignupPage() {
     };
 
     const onClickSignup = async () => {
-        let currentErrors: Record<string, string> = {};
+        const currentErrors: Record<string, string> = {};
 
         if (!validateEmail(form.email)) {
             currentErrors.email = "Please enter a valid email address.";
@@ -76,7 +75,6 @@ export function UserSignupPage() {
         if (form.password !== form.confirmPassword) {
             currentErrors.confirmPassword = "Passwords do not match.";
         }
-        // Format the birthDate (whether it's a Date or string)
         const birthDateString =
             form.birthDate instanceof Date
                 ? form.birthDate.toISOString().substring(0, 10)
@@ -85,20 +83,16 @@ export function UserSignupPage() {
             currentErrors.birthDate = "Please enter a valid birth date.";
         }
 
-        // You can add further validations for ssn, gender, phone, etc.
 
-        // If there are any validation errors, update state and exit
         if (Object.keys(currentErrors).length > 0) {
             setErrors((prev) => ({ ...prev, ...currentErrors }));
             return;
         }
 
-        // If validation passes, prepare to call the API.
         setPendingApiCall(true);
         setApiError(false);
 
         try {
-            // Remove confirmPassword from the payload before sending
             const { confirmPassword, ...payload } = form;
             const response = await AuthService.signup(payload);
 
@@ -402,6 +396,7 @@ export function UserSignupPage() {
                                             pendingApiCall={pendingApiCall}
                                             className="btn btn-info btn-lg btn-block"
                                             text="Register"
+                                            onClick={onClickSignup}
                                         />
                                     </div>
 

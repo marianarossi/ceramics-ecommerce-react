@@ -1,5 +1,5 @@
 import { api } from "@/lib/axios";
-import {IUser, IUserUpdate} from "@/commons/interfaces.ts";
+import { IUserUpdate} from "@/commons/interfaces.ts";
 
 const USERS_URL = "/users";
 

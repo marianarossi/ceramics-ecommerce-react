@@ -11,14 +11,10 @@ interface UserEditModalProps {
 }
 
 export function UserEditModal({ modalOpen, setModalOpen, onUserSaved, userToEdit }: UserEditModalProps) {
-    if (!modalOpen) {
-        return null;
-    }
-
     const [form, setForm] = useState<IUserUpdate>({
         id: userToEdit?.id,
         displayName: userToEdit?.displayName || "",
-        password: "", // leave blank to keep the current password
+        password: "",
         ssn: userToEdit?.ssn || "",
         birthDate: userToEdit?.birthDate ? userToEdit.birthDate.substring(0, 10) : "",
         gender: userToEdit?.gender || "",
@@ -43,6 +39,10 @@ export function UserEditModal({ modalOpen, setModalOpen, onUserSaved, userToEdit
         }
     }, [userToEdit]);
 
+    if (!modalOpen) {
+        return null;
+    }
+
     const onChange = (event: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
         const { name, value } = event.target;
         setForm((prevForm) => ({
@@ -59,17 +59,22 @@ export function UserEditModal({ modalOpen, setModalOpen, onUserSaved, userToEdit
         setPendingApiCall(true);
         setApiError(false);
 
-        const response = await UserService.update(form);
+        try {
+            const response = await UserService.update(form);
 
-        if (response.status === 200) {
-            // Use the updated user returned from the API
-            onUserSaved(response.data);
-            setModalOpen(false);
-        } else {
-            if (response.data.validationErrors) {
-                setErrors(response.data.validationErrors);
+            if (response.status === 200) {
+                onUserSaved(response.data);
+                setModalOpen(false);
+            } else {
+                if (response.data.validationErrors) {
+                    setErrors(response.data.validationErrors);
+                }
+                setApiError(true);
             }
+        } catch (error) {
             setApiError(true);
+            console.log(error);
+        } finally {
             setPendingApiCall(false);
         }
     };
@@ -170,7 +175,6 @@ export function UserEditModal({ modalOpen, setModalOpen, onUserSaved, userToEdit
                                 placeholder="Enter new password"
                             />
                             {errors.password && <div className="invalid-feedback">{errors.password}</div>}
-                            <small className="text-muted">Leave blank to keep the current password.</small>
                         </div>
 
                         {apiError && <div className="alert alert-danger">Failed to update user!</div>}

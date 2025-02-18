@@ -1,4 +1,3 @@
-// ProductSlide.tsx
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { IProduct } from '@/commons/interfaces';
@@ -16,7 +15,6 @@ const ProductSlide: React.FC = () => {
         const fetchProducts = async () => {
             try {
                 const response = await ProductService.findAllPageable(currentPage);
-                // API returns a pageable object so we extract the content array
                 setProducts(response.data.content);
                 setTotalPages(response.data.totalPages);
             } catch (error) {
@@ -62,7 +60,13 @@ const ProductSlide: React.FC = () => {
                 {products.map(product => (
                     <div className="col" key={product.id}>
                         <div className="card h-100">
-                            <img src={product.img} className="card-img-top" alt={product.title} />
+                            <img
+                                src={product.img}
+                                className="card-img-top"
+                                alt={product.title}
+                                onClick={() => loadProduct(product.id!)}
+                                style={{ cursor: 'pointer' }}
+                            />
                             <div className="card-body" onClick={() => loadProduct(product.id!)}>
                                 <h5 className="card-title">{product.title}</h5>
                                 <p className="card-text">{product.text}</p>
@@ -84,7 +88,6 @@ const ProductSlide: React.FC = () => {
                 ))}
             </div>
 
-            {/* Pagination Controls */}
             <div className="pagination-controls d-flex justify-content-center align-items-center mt-3">
                 <button
                     className="btn btn-secondary me-2"
@@ -93,8 +96,8 @@ const ProductSlide: React.FC = () => {
                     Previous
                 </button>
                 <span>
-          Page {currentPage + 1} of {totalPages}
-        </span>
+                    Page {currentPage + 1} of {totalPages}
+                </span>
                 <button
                     className="btn btn-secondary ms-2"
                     disabled={currentPage >= totalPages - 1}

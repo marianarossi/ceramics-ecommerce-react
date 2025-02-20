@@ -9,6 +9,7 @@ import addressService from "@/service/address-service.ts";
 import orderService from "@/service/order-service.ts";
 import { AddAddressModal } from "@/components/address-modal";
 import { UserEditModal } from "@/components/user-modal";
+import {useToast} from "@chakra-ui/react";
 
 export function UserPage() {
   const [justifyActive, setJustifyActive] = useState("tab1");
@@ -19,6 +20,7 @@ export function UserPage() {
   const [addressToEdit, setAddressToEdit] = useState<IAddress | undefined>(undefined);
   const [userModalOpen, setUserModalOpen] = useState(false);
   const [userToEdit, setUserToEdit] = useState<IUser | null>(null);
+  const toast = useToast();
 
   const handleUserEditClick = (user: IUser | null) => {
     setUserToEdit(user);
@@ -47,10 +49,45 @@ export function UserPage() {
   };
 
   const handleDeleteAddress = async (address: IAddress) => {
+    // First, check if any order is using this address
+    const isAddressUsed = orders.some(order => order.address.id === address.id);
+    if (isAddressUsed) {
+      toast({
+        title: 'Cannot delete address.',
+        description: 'There is an order placed with this address.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'top-right'
+      });
+      return;
+    }
+
     try {
-      await addressService.remove(address);
-      setAddresses((prev) => prev.filter((a) => a.id !== address.id));
+      const response = await addressService.remove(address);
+      if (response.status === 200) {
+        // Only remove the address from state if deletion was successful
+        setAddresses(prev => prev.filter(a => a.id !== address.id));
+      } else {
+        toast({
+          title: 'Deletion failed',
+          description: 'The address could not be deleted. Please try again later.',
+          status: 'error',
+          duration: 3000,
+          isClosable: true,
+          position: 'top-right'
+        });
+      }
     } catch (error) {
+      // Catch any error returned from the backend and notify the user
+      toast({
+        title: 'Deletion error',
+        description: 'This address is associated with an order and cannot be deleted.',
+        status: 'error',
+        duration: 3000,
+        isClosable: true,
+        position: 'top-right'
+      });
       console.error("An error occurred while deleting the address", error);
     }
   };

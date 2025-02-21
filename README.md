@@ -1,3 +1,5 @@
+[![wakatime](https://wakatime.com/badge/github/marianarossi/ceramics-ecommerce-react.svg)](https://wakatime.com/badge/github/marianarossi/ceramics-ecommerce-react)
+
 ## Overview
 
 This project is a fully functional e-commerce client built using React.js and TypeScript. It is designed to provide a seamless shopping experience for users, with features such as product listings, shopping cart, and checkout. The client application communicates with the backend API to fetch and manage data. API is available at: [ceramics-eCommerce-API](https://github.com/marianarossi/ceramics-eCommerce-API)

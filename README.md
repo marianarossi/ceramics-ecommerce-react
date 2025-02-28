@@ -2,7 +2,9 @@
 
 # E-commerce Front-end
 
-This repository contains the front-end application for an e-commerce solution. Built with React, TypeScript, and Vite, the application delivers a responsive, intuitive user interface that connects to a RESTful backend API to handle user authentication, product browsing, user authentication, and shopping cart management. The client application communicates with the backend API to fetch and manage data. API is available at: [ceramics-eCommerce-API](https://github.com/marianarossi/ceramics-eCommerce-API)
+This repository contains the front-end application for an e-commerce solution. Built with React, TypeScript, and Vite, the application delivers a responsive, intuitive user interface that connects to a RESTful backend API to handle user authentication, product browsing, and shopping cart management. The client application communicates with the backend API to fetch and manage data. 
+
+API is available at: [ceramics-eCommerce-API](https://github.com/marianarossi/ceramics-eCommerce-API)
 
 ## Key Technologies
 

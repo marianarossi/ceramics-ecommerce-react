@@ -65,6 +65,7 @@ export function AddAddressModal({
     const [pendingApiCall, setPendingApiCall] = useState(false);
     const [apiError, setApiError] = useState(false);
     const [apiSuccess, setApiSuccess] = useState(false);
+    const [isLoading, setIsLoading] = useState(false);
 
     useEffect(() => {
         if (addressToEdit) {
@@ -96,6 +97,7 @@ export function AddAddressModal({
     };
 
     const handleZipBlur = async () => {
+        setIsLoading(true);
         if (newAddress.zip.length === 8) {
             const addressData = await addressService.getAddressByCEP(newAddress.zip);
             if (addressData) {
@@ -108,6 +110,9 @@ export function AddAddressModal({
                     country: "Brasil",
                 }));
             }
+            setTimeout(() => {
+                setIsLoading(false);
+            }, 2000);
         }
     };
 
@@ -191,6 +196,11 @@ export function AddAddressModal({
             setPendingApiCall(false);
         }
     };
+
+    // if(isLoading) {
+    //     return <></>
+    // }
+
     return (
         <MDBModal open={modalOpen} setOpen={setModalOpen} tabIndex="-1">
             <MDBModalDialog>
@@ -206,6 +216,15 @@ export function AddAddressModal({
                         ></MDBBtn>
                     </MDBModalHeader>
                     <MDBModalBody>
+                        {
+                            isLoading ? (
+                                <div className="d-flex justify-content-center">
+                                    <div className="spinner-border text-primary" role="status">
+                                        <span className="visually-hidden">Loading...</span>
+                                    </div>
+                                </div>
+                            ) : (
+                        <>
                         <MDBInput
                             className={`mb-3 ${addressErrors.zip ? "is-invalid" : ""}`}
                             label="ZIP Code"
@@ -225,6 +244,8 @@ export function AddAddressModal({
                             onChange={handleAddressChange}
                             name="street"
                         />
+                        </>
+                        )}
                         {addressErrors.street && (
                             <div className="invalid-feedback">{addressErrors.street}</div>
                         )}
@@ -300,6 +321,8 @@ export function AddAddressModal({
                         <MDBBtn color="secondary" onClick={() => setModalOpen(false)}>
                             Close
                         </MDBBtn>
+                        {
+                            !isLoading &&
                         <ButtonWithProgress
                             disabled={pendingApiCall}
                             pendingApiCall={pendingApiCall}
@@ -307,6 +330,7 @@ export function AddAddressModal({
                             text={addressToEdit ? "Save Changes" : "Save Address"}
                             onClick={handleSaveAddress}
                         />
+                        }
                     </MDBModalFooter>
                     {apiError && (
                         <div className="alert alert-danger">Failed to save address!</div>

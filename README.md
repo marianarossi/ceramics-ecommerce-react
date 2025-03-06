@@ -38,7 +38,7 @@ The project follows a modular, scalable structure:
   - **components/**: Reusable UI components (e.g., Input, ButtonWithProgress, NavBar, Footer, UserModal, AddressModal, etc).
   - **commons/**: Shared interfaces and types.
   - **lib/**: Axios configuration (`axios.ts`) for centralized API communication.
-  - **pages/**: Page-level components for features like Home, Login, User Signup, User management, Cart, and Product page.
+  - **pages/**: Page-level components for features like Home, Login, User Signup, User page, Cart, and Product page.
   - **routes/**: React Router configuration for managing public and protected routes.
   - **App.tsx:**  
   The application’s entry point that integrates routing (and ChakraProvider for UI styling).

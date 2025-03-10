@@ -15,7 +15,7 @@ API is available at: [ceramics-eCommerce-API](https://github.com/marianarossi/ce
   Fast build times with Vite’s optimized bundling and hot module replacement.
 
 - **React Router:**  
-  Declaratively manage routes for public pages (like login and signup) and protected areas (like home, product lists, and category management).
+  Declaratively manage routes for public pages (like home, login and signup) and protected areas (like user management and checkout pages).
 
 - **UI Libraries:**  
   - **Bootstrap:** Provides a responsive grid system and prebuilt styles for rapid UI development.
